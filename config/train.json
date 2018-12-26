@@ -1,0 +1,14 @@
+{
+  "topology": [3, 2, 2],
+  "learningRate": 0.05,
+  "momentum": 1.0,
+  "bias": 1.0,
+  "epoch": 1000,
+  "hActivation": 0,
+  "oActivation": 0,
+  "gradientDescent" : 0,
+  "batch" : 0,
+  "trainingFile": "../data/data1.csv",
+  "labelsFile": "../data/label1.csv",
+  "weightsFile": "../weights/1.json"
+}
