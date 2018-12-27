@@ -4,12 +4,17 @@
 #include <iostream>
 #include "Neuron.hpp"
 #include "Matrix.hpp"
+enum LAYER_TYPE{
+  INPUT,
+  HIDDEN_FULLYCONNECTED,
+  OUTPUT
+};
 
 class Layer
 {
 public:
-  Layer(int size);
-  Layer(int size, int activationType);
+  Layer(int size, LAYER_TYPE layerType, NN_ACTIVATION activationType = A_RELU);
+
   void setVal(int i, double v);
 
   Matrix *matrixifyValues();
@@ -27,6 +32,7 @@ public:
 
 private:
   int size;
+  LAYER_TYPE layerType;
   std::vector<Neuron *> neurons;
 };
 

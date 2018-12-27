@@ -1,20 +1,23 @@
 #include "../headers/Layer.hpp"
 
-Layer::Layer(int size) {
+Layer::Layer(int size, LAYER_TYPE layerType, NN_ACTIVATION activationType) {
   this->size = size;
+  this->layerType = layerType;
 
-  for(int i = 0; i < size; i++) {
-    Neuron *n = new Neuron(0.000000000);
-    this->neurons.push_back(n);
-  }
-}
-
-Layer::Layer(int size, int activationType) {
-  this->size = size;
+  double totalActivated = 0.0;
 
   for(int i = 0; i < size; i++) {
     Neuron *n = new Neuron(0.000000000, activationType);
+    if(layerType == OUTPUT) totalActivated =+ n->getActivatedValue();
     this->neurons.push_back(n);
+  }
+
+  // If the layer is the output and the activation function is SOFTMAX then 
+  // some more computation is needed
+  if(layerType == OUTPUT && activationType == A_SOFTMAX){
+    for(Neuron *n : this->neurons){
+      n->setActivatedVal(n->getActivatedValue() / totalActivated);
+    }
   }
 }
 
@@ -33,7 +36,7 @@ Matrix *Layer::matrixifyValues() {
 Matrix *Layer::matrixifyActivatedValues() {
   Matrix *m = new Matrix(1, this->neurons.size(), false);
     for(int i = 0; i < this->neurons.size(); i++) {
-      m->setValue(0, i, this->neurons.at(i)->getActivatedVal());
+      m->setValue(0, i, this->neurons.at(i)->getActivatedValue());
     }   
   return m;
 }
@@ -41,7 +44,7 @@ Matrix *Layer::matrixifyActivatedValues() {
 Matrix *Layer::matrixifyDerivedValues() {
   Matrix *m = new Matrix(1, this->neurons.size(), false);
   for(int i = 0; i < this->neurons.size(); i++) {
-    m->setValue(0, i, this->neurons.at(i)->getDerivedVal());
+    m->setValue(0, i, this->neurons.at(i)->getDerivedValue());
   }
   return m;
 }
@@ -50,7 +53,7 @@ std::vector<double> Layer::getActivatedValues() {
   std::vector<double> ret;
 
   for(int i = 0; i < this->neurons.size(); i++) {
-    double v = this->neurons.at(i)->getActivatedVal();
+    double v = this->neurons.at(i)->getActivatedValue();
     ret.push_back(v);
   }
 

@@ -24,7 +24,7 @@ void NeuralNetwork::train(
         this->backPropagation();
 
     }
-    std::cout << "Error at epoch " << i+1 << ": " << this->error << std::endl;
+    std::cout << "Loss/Cost at epoch " << i+1 << ": " << this->error << std::endl;
   }
   
 }

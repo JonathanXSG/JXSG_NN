@@ -22,7 +22,21 @@ $ JXSG_NN [path/to/config.json]
 ## Resources
 ```
 https://steemit.com/ai/@ralampay/training-a-neural-network-a-numerical-example-part-1
-https://steemit.com/ai/@neurallearner/ai-introduction-part-2-images-and-and-convolutional-neural-network
+http://dprogrammer.org/gradient-descent-algorithm
 https://www.youtube.com/watch?v=L_PByyJ9g-I&t=2439s
+https://www.youtube.com/watch?v=z8DY5DndmxI
 
+Activation Functions
+https://towardsdatascience.com/activation-functions-neural-networks-1cbd9f8d91d6
+
+SoftMax and Entropy Cost Function
+https://eli.thegreenplace.net/2016/the-softmax-function-and-its-derivative/
+http://cs231n.github.io/linear-classify/#softmax
+https://stats.stackexchange.com/questions/235528/backpropagation-with-softmax-cross-entropy
+https://stats.stackexchange.com/questions/79454/softmax-layer-in-a-neural-network
+
+Links for Ideas
 https://www.youtube.com/watch?v=zXntbSlqjds
+https://www.youtube.com/watch?v=z8DY5DndmxI
+
+https://en.wikipedia.org/wiki/Vanishing_gradient_problem

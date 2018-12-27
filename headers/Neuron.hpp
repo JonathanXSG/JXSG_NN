@@ -4,35 +4,39 @@
 #include <iostream>
 #include <math.h>
 
-enum ACTIVATION_TYPE{
-  TANH = 0,
-  RELU = 1,
-  SIGM = 2,
-  LINE = 3
-}; 
+enum NN_ACTIVATION {
+  A_TANH        = 0,
+  A_RELU        = 1,
+  A_SIGM        = 2,
+  A_LeakyRELU   = 3,
+  A_LINE        = 4,
+  A_SOFTMAX     = 5
+};
 
 class Neuron
 {
 public:
-  Neuron(double val);
-  Neuron(double val, int activationType);
+  Neuron(double value, NN_ACTIVATION activationType, double max = 0.0);
 
-  void setVal(double v);
-  void activate();
+  void setVal(double value, double max = 0.0);
+  void setActivatedVal(double value){
+    this->activatedVal = value;
+  };
+  void activate(double max);
   void derive();
 
   // Getter
-  double getVal() { return this->val; }
-  double getActivatedVal() { return this->activatedVal; }
-  double getDerivedVal() { return this->derivedVal; }
+  double getVal() { return this->value; }
+  double getActivatedValue() { return this->activatedVal; }
+  double getDerivedValue() { return this->derivedVal; }
 
 private:
-  double val;
+  double value;
 
   double activatedVal;
   double derivedVal;
 
-  int activationType = 2;
+  NN_ACTIVATION activationType = A_RELU;
 };
 
 #endif

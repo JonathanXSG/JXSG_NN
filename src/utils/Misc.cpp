@@ -34,8 +34,8 @@ ANNConfig utils::Misc::buildConfig(json configObject) {
   double learningRate         = configObject["learningRate"];
   double momentum             = configObject["momentum"];
   int epoch                   = configObject["epoch"];
-  ANN_ACTIVATION hActivation  = configObject["hActivation"];
-  ANN_ACTIVATION oActivation  = configObject["oActivation"];
+  NN_ACTIVATION hActivation  = configObject["hActivation"];
+  NN_ACTIVATION oActivation  = configObject["oActivation"];
   GRADIENT_DESCENT gradDesc   = configObject["gradientDescent"];
   std::cout << "here" << std::endl;
   int batch                   = configObject["batch"];

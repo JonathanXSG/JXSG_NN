@@ -16,17 +16,17 @@ NeuralNetwork::NeuralNetwork(ANNConfig config) {
   for(int i = 0; i < topologySize; i++) {
     // Initlializing Hidden layers
     if(i > 0 && i < (topologySize - 1)) {
-      Layer *l  = new Layer(topology.at(i), this->hiddenActivationType);
+      Layer *l  = new Layer(topology.at(i),HIDDEN_FULLYCONNECTED, this->hiddenActivationType);
       this->layers.push_back(l);
     } 
     // Initializing Output layer
     else if(i == (topologySize - 1)) {
-      Layer *l  = new Layer(topology.at(i), this->outputActivationType);
+      Layer *l  = new Layer(topology.at(i), OUTPUT, this->outputActivationType);
       this->layers.push_back(l);
     } 
     // Initializing Input Layer
     else {
-      Layer *l  = new Layer(topology.at(i));
+      Layer *l  = new Layer(topology.at(i), INPUT);
       this->layers.push_back(l);
     }
   }

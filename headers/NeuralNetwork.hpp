@@ -13,14 +13,9 @@
 
 using json = nlohmann::json;
 
-enum ANN_COST {
-  COST_MSE
-};
-
-enum ANN_ACTIVATION {
-  A_TANH,
-  A_RELU,
-  A_SIGM
+enum NN_COST {
+  COST_MSE,
+  COST_CEE
 };
 
 enum GRADIENT_DESCENT{
@@ -35,9 +30,9 @@ struct ANNConfig {
   double learningRate;
   double momentum;
   int epoch;
-  ANN_ACTIVATION hActivation;
-  ANN_ACTIVATION oActivation;
-  ANN_COST cost;
+  NN_ACTIVATION hActivation;
+  NN_ACTIVATION oActivation;
+  NN_COST cost;
   GRADIENT_DESCENT gradientDescent;
   int batch;
   std::string trainingFile;
@@ -79,18 +74,18 @@ public:
     return new Matrix(*this->weightMatrices.at(index)); 
     };
 
-  void setNeuronValue(int indexLayer, int indexNeuron, double val) { 
-    this->layers.at(indexLayer)->setVal(indexNeuron, val); 
+  void setNeuronValue(int indexLayer, int indexNeuron, double value) { 
+    this->layers.at(indexLayer)->setVal(indexNeuron, value); 
   }
 
   void saveWeights(std::string file);
   void loadWeights(std::string file);
 
   int topologySize;
-  int hiddenActivationType  = RELU;
-  int outputActivationType  = SIGM;
-  int costFunctionType      = COST_MSE;
-  GRADIENT_DESCENT gradientDescent  = STOCHASTIC;
+  NN_ACTIVATION hiddenActivationType  = A_RELU;
+  NN_ACTIVATION outputActivationType  = A_SIGM;
+  NN_COST costFunctionType            = COST_MSE;
+  GRADIENT_DESCENT gradientDescent    = STOCHASTIC;
 
   std::vector<int> topology;
   std::vector<Layer *> layers;
@@ -111,6 +106,7 @@ public:
 
 private:
   void setErrorMSE();
+  void setErrorCEE();
 };
 
 #endif
