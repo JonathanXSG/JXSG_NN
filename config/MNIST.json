@@ -3,7 +3,7 @@
     "learningRate": 0.05,
     "momentum": 1.0,
     "bias": 1.0,
-    "epoch": 30,
+    "epoch": 10,
     "hActivation": 1,
     "oActivation": 1,
     "gradientDescent" : 0,

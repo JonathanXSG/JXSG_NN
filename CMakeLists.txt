@@ -11,8 +11,7 @@ add_executable(
   src/Matrix.cpp
   src/Layer.cpp
   src/utils/Math.cpp
-  src/utils/Misc.cpp
-  src/neural_network/NeuralNetwork.cpp
+        src/neural_network/NeuralNetwork.cpp
   src/neural_network/setErrors.cpp
   src/neural_network/feedForward.cpp
   src/neural_network/backPropagation.cpp

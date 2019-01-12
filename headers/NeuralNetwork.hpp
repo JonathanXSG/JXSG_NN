@@ -56,6 +56,7 @@ public:
   void feedForward();
   void backPropagation();
   void setErrors();
+  void printToConsole();
 
   std::vector<double> getActivatedValues(int index) { 
     return this->layers.at(index)->getActivatedValues(); 
