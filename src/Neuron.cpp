@@ -16,13 +16,13 @@ void Neuron::activate(double max) {
     this->activatedVal = tanh(this->value);
   } 
   else if(activationType == A_SIGM) {
-    this->activatedVal = (1 / (1 + exp(-this->value)));
+    this->activatedVal = (1.0 / (1.0 + exp(-this->value)));
   } 
   else if(activationType == A_RELU) {
-    this->activatedVal = this->value >= 0 ? this->value : 0.0;
+    this->activatedVal = this->value > 0.0 ? this->value : 0.0;
   } 
   else if(activationType == A_LeakyRELU) {
-    this->activatedVal = this->value >= 0 ? this->value : this->value/100;
+    this->activatedVal = this->value > 0.0 ? this->value : this->value/100;
   } 
   else if(activationType == A_LINE) {
     this->activatedVal = this->value;
@@ -31,7 +31,7 @@ void Neuron::activate(double max) {
     this->activatedVal = exp(this->value - max);
   } 
   else {
-    this->activatedVal = (1 / (1 + exp(-this->value)));
+    this->activatedVal = (1.0 / (1.0 + exp(-this->value)));
   }
 }
 
@@ -40,22 +40,22 @@ void Neuron::derive() {
     this->derivedVal = (1.0 - (this->activatedVal * this->activatedVal));
   } 
   else if(activationType == A_RELU) {
-    this->derivedVal = this->activatedVal >= 0 ? 1.0 : 0.0;
+    this->derivedVal = this->activatedVal > 0 ? 1.0 : 0.0;
   } 
   else if(activationType == A_LeakyRELU) {
-
+    this->activatedVal = this->value > 0.0 ? 1.0 : 1.0/100.0;
   } 
   else if(activationType == A_SIGM) {
-    this->derivedVal = (this->activatedVal * (1 - this->activatedVal));
+    this->derivedVal = (this->activatedVal * (1.0 - this->activatedVal));
   } 
   else if(activationType == A_LINE) {
     this->derivedVal = 1.0;
   } 
   else if(activationType == A_SOFTMAX) {
-    this->derivedVal = this->activatedVal * (1- this->activatedVal);
+    this->derivedVal = this->activatedVal * (1.0- this->activatedVal);
   } 
   else {
-    this->derivedVal = (this->activatedVal * (1 - this->activatedVal));
+    this->derivedVal = (this->activatedVal * (1.0 - this->activatedVal));
   }
 }
 

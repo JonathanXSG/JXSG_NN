@@ -51,7 +51,7 @@ double Matrix::generateRandomNumber() {
 void Matrix::printToConsole() {
   for(int i = 0; i < this->rows; i++) {
     for(int j = 0; j < this->columns; j++) {
-      std::cout << this->values.at(i).at(j) << "\t";
+      std::cout << std::setprecision(5) << this->values.at(i).at(j) << "\t";
     }
     std::cout << std::endl;
   }

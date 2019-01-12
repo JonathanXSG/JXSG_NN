@@ -38,5 +38,7 @@ https://stats.stackexchange.com/questions/79454/softmax-layer-in-a-neural-networ
 Links for Ideas
 https://www.youtube.com/watch?v=zXntbSlqjds
 https://www.youtube.com/watch?v=z8DY5DndmxI
+https://github.com/DenysRomanenko/DigitRecognition/blob/master/DigitRecognition/main.cpp
+https://github.com/BobbyAnguelov/NeuralNetwork
 
 https://en.wikipedia.org/wiki/Vanishing_gradient_problem

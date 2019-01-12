@@ -12,8 +12,11 @@ void NeuralNetwork::train(
 
       this ->setCurrentInput(input);
       this->setCurrentTarget(target);
-
+      // std::cout << "initial" << std::endl;
+      // this->printToConsole();
       this->feedForward();
+      //       std::cout << "feed forward" << std::endl;
+      // this->printToConsole();
       this->setErrors();
 
       if(gradientDescent == STOCHASTIC)
@@ -22,9 +25,9 @@ void NeuralNetwork::train(
         this->backPropagation();
       else if(gradientDescent == BATCH && (this->config.epoch-1) == i)
         this->backPropagation();
-
     }
-    std::cout << "Loss/Cost at epoch " << i+1 << ": " << this->error << std::endl;
+    std::cout << "Epoch: " << i+1 << "Loss/Cost : " << this->error << "" 
+      << std::endl;
   }
   
 }

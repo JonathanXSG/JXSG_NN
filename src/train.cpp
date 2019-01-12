@@ -26,8 +26,23 @@ int main(int argc, char **argv) {
 
   NeuralNetwork *n  = new NeuralNetwork(utils::Misc::buildConfig(json::parse(str)));
 
-  std::vector< std::vector<double>> trainingData = utils::Misc::fetchData(n->config.trainingFile);
-  std::vector< std::vector<double> > labelData    = utils::Misc::fetchData(n->config.labelsFile);
+  std::vector< std::vector<double>> trainingData;
+  std::vector< std::vector<double> > labelData;
+  std::vector< std::vector<double>> testData;
+  std::vector< std::vector<double> > testLabelData;
+
+  if(argv[1] == "../config/MNIST.json"){
+    std::vector< std::vector<double>> trainingData(60000, std::vector<double>(784));
+    std::vector< std::vector<double>> labelData(60000, std::vector<double>(10));
+    std::vector< std::vector<double>> testData(10000, std::vector<double>(784));
+    std::vector< std::vector<double>> testLabelData(10000, std::vector<double>(10));
+
+    utils::Misc::readMNIST(trainingData, labelData, testData, testLabelData);
+  }
+  else{
+    trainingData  = utils::Misc::fetchData(n->config.trainingFile);
+    labelData    = utils::Misc::fetchData(n->config.labelsFile);
+  }
 
   std::cout << "Training Data Size: " << trainingData.size() << std::endl;
   std::cout << "Label Data Size: " << labelData.size() << std::endl;
