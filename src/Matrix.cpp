@@ -32,7 +32,7 @@ Matrix::Matrix(int rows, int columns, bool isRandom) {
     std::vector<double> colValues;
 
     for(int j = 0; j < columns; j++) {
-      double r = isRandom == true ? this->generateRandomNumber() : 0.00;
+      double r = isRandom ? this->generateRandomNumber() : 0.00;
       colValues.push_back(r);
     }
 
@@ -43,7 +43,7 @@ Matrix::Matrix(int rows, int columns, bool isRandom) {
 double Matrix::generateRandomNumber() {
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_real_distribution<> dis(-.0001, .0001);
+  std::uniform_real_distribution<double> dis(-.0001, .0001);
 
   return dis(gen);
 }

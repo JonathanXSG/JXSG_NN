@@ -140,7 +140,9 @@ namespace utils {
                 for (int i = 0; i < number_of_images; ++i) {
                     unsigned char temp = 0;
                     file.read((char *) &temp, sizeof(temp));
-                    std::vector<double> vect{((double) temp)};
+//                    std::vector<double> vect{((double) temp)};
+                    std::vector<double> vect(10, 0.0);
+                    vect.at((unsigned  int)temp) = 1.0;
                     vec.push_back(vect);
                 }
             }

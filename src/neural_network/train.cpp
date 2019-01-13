@@ -6,7 +6,7 @@ void NeuralNetwork::train(
 ) {
 
     for (int i = 0; i < this->config.epoch; i++) {
-        for (int tIndex = 0; tIndex < trainingData.size(); tIndex++) {
+        for (int tIndex = 0; tIndex < 1000; tIndex++) {
             std::vector<double> input = trainingData.at(tIndex);
             std::vector<double> target = labelData.at(tIndex);
 
@@ -27,7 +27,21 @@ void NeuralNetwork::train(
                 this->backPropagation();
             else if (gradientDescent == BATCH && (this->config.epoch - 1) == i)
                 this->backPropagation();
+
+
         }
+//        std::cout << target.size() << std::endl;
+//        this->layers.at(this->layers.size()-1)->matrixifyActivatedValues()->printToConsole();
+//        std::cout << this->layers.at(this->layers.size()-1)->getNeurons().size() << std::endl;
+
+        std::cout << "Output: ";
+        this->layers.at(this->layers.size()-1)->matrixifyActivatedValues()->printToConsole();
+        std::cout << "\nTarget: ";
+        for (double j : this->target) {
+            std::cout << std::setprecision(5) << j << "\t";
+        }
+        std::cout << std::endl;
+        std::cout << std::endl;
         std::cout << "Epoch: " << i + 1 << "Loss/Cost : " << this->error << ""
                   << std::endl;
     }

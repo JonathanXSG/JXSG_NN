@@ -8,7 +8,7 @@ Layer::Layer(int size, LAYER_TYPE layerType, NN_ACTIVATION activationType) {
 
   for(int i = 0; i < size; i++) {
     Neuron *n = new Neuron(0.000000000, activationType);
-    if(layerType == OUTPUT) totalActivated =+ n->getActivatedValue();
+    if(layerType == OUTPUT) totalActivated += n->getActivatedValue();
     this->neurons.push_back(n);
   }
 
