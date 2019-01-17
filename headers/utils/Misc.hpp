@@ -38,6 +38,15 @@ namespace utils {
             std::cout << "train [configFile]" << std::endl;
         }
 
+        static void printMatrix(std::vector<std::vector<double>> matrix) {
+            for (int i = 0; i < matrix.size(); i++) {
+                for (int j = 0; j < matrix[0].size(); j++) {
+                    std::cout << std::setprecision(2) << matrix[i][j] << "\t";
+                }
+                std::cout << std::endl;
+            }
+        }
+
         static ANNConfig buildConfig(json configObject) {
             ANNConfig config;
 
@@ -120,7 +129,12 @@ namespace utils {
                         for (int c = 0; c < n_cols; ++c) {
                             unsigned char temp = 0;
                             file.read((char *) &temp, sizeof(temp));
-                            tp.push_back((double) temp);
+                            if (temp > 0) {
+                                tp.push_back(1.0);
+                            } else {
+                                tp.push_back(0);
+                            }
+//                            tp.push_back((double) temp/255);
                         }
                     }
                     vec.push_back(tp);

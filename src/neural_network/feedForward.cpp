@@ -27,11 +27,13 @@ void NeuralNetwork::feedForward() {
     // rightNeuron_x =  Sum ( leftNeuron_y * weight_x-y )
     utils::Math::multiplyMatrix(leftNeurons, leftWeights, rightNeurons);
 
-    // Savng the results (adding the bias of the layer) to the next Layer's neuron values
+    // Saving the results (adding the bias of the layer) to the next Layer's neuron values
     // The activated values will also be calculated and saved
     for(int rightIndex = 0; rightIndex < rightNeurons->getColumns(); rightIndex++) {
       this->setNeuronValue(i + 1, rightIndex, rightNeurons->getValue(0, rightIndex) + this->bias);
     }
+    this->layers.at(i+1)->activate();
+    this->layers.at(i+1)->derive();
 
     delete leftNeurons;
     delete leftWeights;

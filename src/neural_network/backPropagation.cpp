@@ -14,7 +14,7 @@ void NeuralNetwork::backPropagation() {
   Matrix *hiddenDerivedValues;
   Matrix *transposedHidden;
 
-  int indexOutputLayer  = this->topology.size() - 1;
+  unsigned indexOutputLayer  = this->topology.size() - 1;
 
   // From output to last hidden layer
   gradients = new Matrix(
@@ -33,7 +33,6 @@ void NeuralNetwork::backPropagation() {
     gradients->setValue(0, i, derivedError * derivedValue);
   }
 
-  // TODO: Check if chanign gradients to (i,0 ) works
 
   // DeltaWeights = Gt * Z
   // Where:  Gt is the transposed Gradients matrix
@@ -145,17 +144,17 @@ void NeuralNetwork::backPropagation() {
     delete deltaWeights;
   }
 
-  for(int i = 0; i < this->weightMatrices.size(); i++) {
-    delete this->weightMatrices[i];
+  for (auto &weightMatrix : this->weightMatrices) {
+    delete weightMatrix;
   }
 
   this->weightMatrices.clear();
 
   reverse(newWeights.begin(), newWeights.end());
 
-  for(int i = 0; i < newWeights.size(); i++) {
-    this->weightMatrices.push_back(new Matrix(*newWeights[i]));
-    delete newWeights[i];
+  for (auto &newWeight : newWeights) {
+    this->weightMatrices.push_back(new Matrix(*newWeight));
+    delete newWeight;
   }
 }
 // void NeuralNetwork::backPropagation() {

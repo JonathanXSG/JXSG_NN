@@ -23,6 +23,7 @@ $ JXSG_NN [path/to/config.json]
 ```
 https://steemit.com/ai/@ralampay/training-a-neural-network-a-numerical-example-part-1
 http://dprogrammer.org/gradient-descent-algorithm
+http://mccormickml.com/2014/03/04/gradient-descent-derivation/
 https://www.youtube.com/watch?v=L_PByyJ9g-I&t=2439s
 https://www.youtube.com/watch?v=z8DY5DndmxI
 
