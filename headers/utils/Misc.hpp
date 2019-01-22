@@ -50,7 +50,7 @@ namespace utils {
         static ANNConfig buildConfig(json configObject) {
             ANNConfig config;
 
-            std::vector<int> topology = configObject["topology"];
+            std::vector<unsigned> topology = configObject["topology"];
             double bias = configObject["bias"];
             double learningRate = configObject["learningRate"];
             double momentum = configObject["momentum"];

@@ -8,7 +8,7 @@
 
 class Matrix {
 public:
-    Matrix(int rows, int columns, bool isRandom) {
+    Matrix(unsigned rows, unsigned columns, bool isRandom) {
         this->rows = rows;
         this->columns = columns;
 
@@ -27,8 +27,8 @@ public:
     Matrix *transpose() {
         auto *m = new Matrix(this->columns, this->rows, false);
 
-        for (int i = 0; i < this->rows; i++) {
-            for (int j = 0; j < this->columns; j++) {
+        for (unsigned i = 0; i < this->rows; i++) {
+            for (unsigned j = 0; j < this->columns; j++) {
                 m->setValue(j, i, this->getValue(i, j));
             }
         }
@@ -39,8 +39,8 @@ public:
     Matrix *copy() {
         auto *m = new Matrix(this->rows, this->columns, false);
 
-        for (int i = 0; i < this->rows; i++) {
-            for (int j = 0; j < this->columns; j++) {
+        for (unsigned i = 0; i < this->rows; i++) {
+            for (unsigned j = 0; j < this->columns; j++) {
                 m->setValue(i, j, this->getValue(i, j));
             }
         }
@@ -57,11 +57,11 @@ public:
         }
     }
 
-    void setValue(int r, int c, double v) {
+    void setValue(unsigned r, unsigned c, double v) {
         this->values.at(r).at(c) = v;
     }
 
-    double getValue(int r, int c) {
+    double getValue(unsigned r, unsigned c) {
         return this->values.at(r).at(c);
     }
 
@@ -69,11 +69,11 @@ public:
         return this->values;
     }
 
-    int getRows() {
+    unsigned getRows() {
         return this->rows;
     }
 
-    int getColumns() {
+    unsigned getColumns() {
         return this->columns;
     }
 
@@ -86,8 +86,8 @@ private:
         return (double)(rand() % 6) / 10.0;
     }
 
-    int rows;
-    int columns;
+    unsigned rows;
+    unsigned columns;
 
     std::vector<std::vector<double> > values;
 };

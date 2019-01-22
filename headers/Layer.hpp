@@ -28,8 +28,12 @@ public:
 
     void derive();
 
-    void setVal(int i, double v) {
-        this->neurons.at(i) = v;
+    void setVal(unsigned i, double v) {
+        this->neurons->at(i) = v;
+    }
+
+    void setNeurons(std::vector<double>* neurons) {
+        this->neurons = neurons;
     }
 
     Matrix *matrixifyValues();
@@ -38,15 +42,15 @@ public:
 
     Matrix *matrixifyDerivedValues();
 
-    std::vector<double> getNeurons() {
+    std::vector<double>* getNeurons() {
         return this->neurons;
     }
 
-    std::vector<double> getActivatedValues() {
+    std::vector<double>* getActivatedValues() {
         return activatedNeurons;
     }
 
-    std::vector<double> getDerivedValues() {
+    std::vector<double>* getDerivedValues() {
         return derivedNeurons;
     }
 
@@ -54,9 +58,9 @@ private:
     int size;
     LAYER_TYPE layerType;
     NN_ACTIVATION activationType;
-    std::vector<double> neurons;
-    std::vector<double> activatedNeurons;
-    std::vector<double> derivedNeurons;
+    std::vector<double>* neurons;
+    std::vector<double>* activatedNeurons;
+    std::vector<double>* derivedNeurons;
 
     double generateRandomNumber();
 };

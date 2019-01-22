@@ -14,7 +14,7 @@ NeuralNetwork::NeuralNetwork(ANNConfig config) {
     this->costFunctionType = config.cost;
 
 // Initializing all layers
-    for (int i = 0; i < topologySize; i++) {
+    for (unsigned i = 0; i < topologySize; i++) {
         // Initializing Hidden layers
         if (i > 0 && i < (topologySize - 1)) {
             auto *l = new Layer(topology.at(i), HIDDEN_FULLYCONNECTED, this->hiddenActivationType);
@@ -37,7 +37,7 @@ NeuralNetwork::NeuralNetwork(ANNConfig config) {
 
     }
     // Initializing weights
-    for (int i = 0; i < (topologySize - 1); i++) {
+    for (unsigned i = 0; i < (topologySize - 1); i++) {
         // Weight matrix with rows = number of Neurons in current layer
         // and columns = number of Neurons in next layer
         auto *m = new Matrix(topology.at(i), topology.at(i + 1), true);
@@ -70,12 +70,8 @@ void NeuralNetwork::saveWeights(std::string filename) {
     o << std::setw(4) << j << std::endl;
 }
 
-void NeuralNetwork::setCurrentInput(std::vector<double> input) {
-    this->input = input;
-
-    for (int i = 0; i < input.size(); i++) {
-        this->layers.at(0)->setVal(i, input.at(i));
-    }
+void NeuralNetwork::setCurrentInput(std::vector<double>& input) {
+    this->layers.at(0)->setNeurons(&input);
 }
 
 void NeuralNetwork::printToConsole() {
