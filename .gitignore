@@ -7,9 +7,6 @@ CMakeCache.txt
 # ignore weight files
 weights/*.json
 
-# ignore data
-data/
-
 #ignore build
 build/ 
 

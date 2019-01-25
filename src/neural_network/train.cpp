@@ -8,7 +8,7 @@ void NeuralNetwork::train(
 
     for (int i = 0; i < this->config.epoch; i++) {
         auto start = std::chrono::high_resolution_clock::now();
-        for (int tIndex = 0; tIndex < 10000; tIndex++) {
+        for (unsigned tIndex = 0; tIndex < 10000; tIndex++) {
 
             this->setCurrentInput(trainingData.at(tIndex));
             this->setCurrentTarget(labelData.at(tIndex));
@@ -23,21 +23,17 @@ void NeuralNetwork::train(
 //                else if (gradientDescent == BATCH && (this->config.epoch - 1) == i)
 //                    this->backPropagation();
 //            }
-
-//            std::cout << tIndex << "   "<< this->error << std::endl;
+            std::cout << "Epoch: " << i + 1 << "Loss/Cost : " << this->error << ""
+                      << std::endl;
+//            std::cout << "Output: ";
+//            this->layers.at(this->layers.size()-1)->matrixifyActivatedValues()->printToConsole();
+//            std::cout << "\nTarget: ";
+//            for (double j : *this->target) {
+//                std::cout << j << "\t";
+//            }
+//            std::cout << std::endl;
+//            std::cout << std::endl;
         }
-//        std::cout << target.size() << std::endl;
-//        this->layers.at(this->layers.size()-1)->matrixifyActivatedValues()->printToConsole();
-//        std::cout << this->layers.at(this->layers.size()-1)->getNeurons().size() << std::endl;
-
-//        std::cout << "Output: ";
-//        this->layers.at(this->layers.size()-1)->matrixifyActivatedValues()->printToConsole();
-//        std::cout << "\nTarget: ";
-//        for (double j : this->target) {
-//            std::cout << std::setprecision(5) << j << "\t";
-//        }
-//        std::cout << std::endl;
-//        std::cout << std::endl;
         std::cout << "Epoch: " << i + 1 << "Loss/Cost : " << this->error << ""
                   << std::endl;
         auto finish = std::chrono::high_resolution_clock::now();

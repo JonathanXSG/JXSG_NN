@@ -119,11 +119,3 @@ Matrix *Layer::matrixifyDerivedValues() {
     }
     return m;
 }
-
-double generateRandomNumber() {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<double> dis(-.0001, .0001);
-
-    return (double) rand()/(double)RAND_MAX;
-}
