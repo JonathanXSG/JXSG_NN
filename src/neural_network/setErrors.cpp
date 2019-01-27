@@ -24,10 +24,10 @@ void NeuralNetwork::setErrorMSE() {
     for (unsigned i = 0; i < target->size(); i++) {
         // Loss function on each neuron
         errors.at(i) = (outputNeurons->at(i) - target->at(i)) * (outputNeurons->at(i) - target->at(i));
-        derivedErrors.at(i) = 2.0 * (outputNeurons->at(i) - target->at(i));
+        derivedErrors.at(i) = (outputNeurons->at(i) - target->at(i));
         this->error += errors.at(i);
     }
-    this->error *= 1.0 / this->config.epoch;
+    this->error *= 0.5;
 }
 
 // Cost Function: Cross Entropy Error

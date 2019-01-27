@@ -22,7 +22,7 @@ enum NN_ACTIVATION {
 
 class Layer {
 public:
-    Layer(int size, LAYER_TYPE layerType, NN_ACTIVATION activationType = A_RELU);
+    Layer(unsigned size, LAYER_TYPE layerType, NN_ACTIVATION activationType = A_RELU);
 
     void activate();
 
@@ -55,7 +55,7 @@ public:
     }
 
 private:
-    int size;
+    unsigned size;
     LAYER_TYPE layerType;
     NN_ACTIVATION activationType;
     std::vector<double> *neurons;

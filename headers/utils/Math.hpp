@@ -5,7 +5,7 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
-#include <assert.h>
+#include <cassert>
 #include "../Matrix.hpp"
 
 
@@ -16,8 +16,8 @@ namespace utils {
             for (int i = 0; i < a->getRows(); i++) {
                 for (int j = 0; j < b->getColumns(); j++) {
                     for (int k = 0; k < b->getRows(); k++) {
-                        double p = a->getValue(i, k) * b->getValue(k, j);
-                        double newVal = c->getValue(i, j) + p;
+                        double p = a->at(i, k) * b->at(k, j);
+                        double newVal = c->at(i, j) + p;
                         c->setValue(i, j, newVal);
                     }
                 }

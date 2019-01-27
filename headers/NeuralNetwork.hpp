@@ -41,7 +41,7 @@ struct ANNConfig {
 
 class NeuralNetwork {
 public:
-    NeuralNetwork(ANNConfig config);
+    explicit NeuralNetwork(ANNConfig config);
 
     void train(
             std::vector<std::vector<double>>& input,
@@ -50,16 +50,14 @@ public:
 
     void setCurrentInput(std::vector<double>& input);
 
-    void setCurrentTarget(std::vector<double>& target) { this->target = &target; };
+    void setCurrentTarget(std::vector<double>& target);
 
     void feedForward();
 
     void backPropagation();
 
     void setErrors();
-
-    void printToConsole();
-
+    
     std::vector<double>* getNeurons(unsigned index) {
         return this->layers.at(index)->getNeurons();
     }
@@ -96,7 +94,7 @@ public:
 
     void loadWeights(std::string file);
 
-    int topologySize;
+    unsigned topologySize;
     NN_ACTIVATION hiddenActivationType = A_RELU;
     NN_ACTIVATION outputActivationType = A_SIGM;
     NN_COST costFunctionType = COST_MSE;
@@ -105,7 +103,7 @@ public:
     std::vector<unsigned> topology;
     std::vector<Layer *> layers;
     std::vector<Matrix *> weightMatrices;
-    std::vector<Matrix *> gradientMatrices;
+    std::vector<Matrix *> deltaMatrices;
 
     std::vector<double>* target;
     std::vector<double> errors;

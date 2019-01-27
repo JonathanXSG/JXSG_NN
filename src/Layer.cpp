@@ -1,6 +1,6 @@
 #include "../headers/Layer.hpp"
 
-Layer::Layer(int size, LAYER_TYPE layerType, NN_ACTIVATION activationType) {
+Layer::Layer(unsigned size, LAYER_TYPE layerType, NN_ACTIVATION activationType) {
     this->size = size;
     this->layerType = layerType;
     this->activationType = activationType;

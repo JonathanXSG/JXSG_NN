@@ -2,106 +2,67 @@
 #include "../../headers/utils/Math.hpp"
 
 void NeuralNetwork::backPropagation() {
-    std::vector<Matrix *> *newWeights = new std::vector<Matrix *>();
-    std::vector<double> *gradients;
+    std::vector<std::vector<double>> *gradients;
     std::vector<double> *zActivatedValues;
-    Matrix *tempNewWeights;
-    std::vector<double> *prevGradients;
 
     unsigned indexOutputLayer = this->topology.size() - 1;
-    newWeights->reserve(this->weightMatrices.size());
 
-    // *********************************
-    // Calculating Gradients of output layer
-    // *********************************
-    gradients = new std::vector<double>(this->topology.at(indexOutputLayer));
+    gradients = new std::vector<std::vector<double>>(
+            this->topologySize,
+            std::vector<double>());
 
-    // Calculating gradients
-    // gradient = dError * dNeuronValue
-    for (unsigned i = 0; i < this->topology.at(indexOutputLayer); i++) {
-        gradients->at(i) = this->derivedErrors.at(i) * this->layers.at(indexOutputLayer)->getDerivedValues()->at(i);
-    }
+    for (unsigned i = indexOutputLayer; i > 0; i--) {
+        gradients->at(i) = std::vector<double>(
+                this->topology.at(i),
+                0);
 
-    // Z is the vector of activated values in the last hidden layer
-    zActivatedValues = this->layers.at(indexOutputLayer - 1)->getActivatedValues();
-
-    // Calculating the new weights
-    tempNewWeights = new Matrix(
-            this->topology.at(indexOutputLayer - 1),
-            this->topology.at(indexOutputLayer),
-            false
-    );
-
-    for (unsigned row = 0; row < this->topology.at(indexOutputLayer - 1); row++) {
-        for (unsigned col = 0; col < this->topology.at(indexOutputLayer); col++) {
-            double originalWeight = this->weightMatrices.at(indexOutputLayer - 1)->getValue(row, col);
-            double deltaWeight = gradients->at(col) * zActivatedValues->at(row);
-
-            originalWeight *= this->momentum;
-            deltaWeight *= this->learningRate;
-
-            tempNewWeights->setValue(row, col, (originalWeight - deltaWeight));
-        }
-    }
-
-    newWeights->push_back(tempNewWeights);
-
-    // *********************************
-    // Calculating Gradients from the last hidden layer to input layer
-    // *********************************
-    for (unsigned i = (indexOutputLayer - 1); i > 0; i--) {
-        prevGradients = gradients;
-
-        gradients = new std::vector<double>(
-                this->weightMatrices.at(i)->getRows()
-        );
-        double sum;
-        for (unsigned r = 0; r < this->weightMatrices.at(i)->getRows(); r++) {
-            sum = 0.0;
-            for (unsigned c = 0; c < prevGradients->size(); c++) {
-                sum += (prevGradients->at(c) * this->weightMatrices.at(i)->getValue(r, c));
+        // *********************************
+        // Calculating Gradients from the last hidden layer to input layer
+        // *********************************
+        if (i != indexOutputLayer){
+            // gradient = dError * dNeuronValue
+            for (unsigned r = 0; r < this->topology.at(i); r++) {
+                for (unsigned c = 0; c < this->topology.at(i+1); c++) {
+                    gradients->at(i).at(r) += (gradients->at(i+1).at(c) * this->weightMatrices.at(i)->at(r, c));
+                }
+                gradients->at(i).at(r) *= this->layers.at(i)->getDerivedValues()->at(r);
             }
-            gradients->at(r) = this->layers.at(i)->getDerivedValues()->at(r) * sum;
+        }
+        // *********************************
+        // Calculating Gradients of output layer
+        // *********************************
+        else{
+            // gradient = dError * dNeuronValue
+            for (unsigned r = 0; r < this->topology.at(indexOutputLayer); r++) {
+                gradients->at(indexOutputLayer).at(r) = this->derivedErrors.at(r) *
+                                                        this->layers.at(indexOutputLayer)->getDerivedValues()->at(r);
+            }
         }
 
-        if (i == 1) {
-            zActivatedValues = this->layers.at(0)->getNeurons();
-        } else {
+    }
+
+    for (unsigned i = indexOutputLayer; i > 0; i--) {
+        if (i != 1)
             zActivatedValues = this->layers.at(i - 1)->getActivatedValues();
-        }
+        else
+            zActivatedValues = this->layers.at(0)->getNeurons();
 
-        // update weights
-        tempNewWeights = new Matrix(
-                this->weightMatrices.at(i - 1)->getRows(),
-                this->weightMatrices.at(i - 1)->getColumns(),
-                false
-        );
+        // Calculating the new weights and deltaWeights
+        for (unsigned row = 0; row < this->topology.at(i - 1); row++) {
+            for (unsigned col = 0; col < this->topology.at(i); col++) {
+                double originalDelta = this->deltaMatrices.at(i - 1)->at(row, col) * this->momentum;
+                double newDelta = gradients->at(i).at(col) * zActivatedValues->at(row) * this->learningRate;
 
-        for (unsigned row = 0; row < tempNewWeights->getRows(); row++) {
-            for (unsigned col = 0; col < tempNewWeights->getColumns(); col++) {
-                double originalWeight = this->weightMatrices.at(i - 1)->getValue(row, col);
-                double deltaWeight = zActivatedValues->at(row) * gradients->at(col);
-
-                originalWeight = this->momentum * originalWeight;
-                deltaWeight = this->learningRate * deltaWeight;
-
-                tempNewWeights->setValue(row, col, (originalWeight - deltaWeight));
+                this->deltaMatrices.at(i - 1)->at(row, col) = originalDelta + newDelta;
+                this->weightMatrices.at(i - 1)->at(row, col) -= this->deltaMatrices.at(i - 1)->at(row, col);
             }
         }
-
-        newWeights->push_back(tempNewWeights);
-        delete prevGradients;
     }
 
-    for (auto &weightMatrix : this->weightMatrices) {
-        delete weightMatrix;
+    for(auto grad : *gradients){
+        grad.clear();
     }
-
-    this->weightMatrices.clear();
-
-    reverse(newWeights->begin(), newWeights->end());
-    this->weightMatrices = *newWeights;
-
+    gradients->clear();
     delete gradients;
 }
 
@@ -133,7 +94,7 @@ void NeuralNetwork::backPropagation() {
 //   // gradient = dError * dNeuronValue
 //   for(int i = 0; i < this->topology.at(indexOutputLayer); i++) {
 //     double derivedError  = this->derivedErrors.at(i);
-//     double derivedValue  = derivedValues->getValue(0, i);
+//     double derivedValue  = derivedValues->at(0, i);
 //     gradients->setValue(0, i, derivedError * derivedValue);
 //   }
 
@@ -159,9 +120,9 @@ void NeuralNetwork::backPropagation() {
 
 //   for(int row = 0; row < this->topology.at(indexOutputLayer - 1); row++) {
 //     for(int col = 0; col < this->topology.at(indexOutputLayer); col++) {
-//       double originalWeight  = this->weightMatrices.at(indexOutputLayer - 1)->getValue(row, col);
+//       double originalWeight  = this->weightMatrices.at(indexOutputLayer - 1)->at(row, col);
 //       // row and col inverted here for the transpose
-//       double deltaWeight     = deltaWeights->getValue(row, col);
+//       double deltaWeight     = deltaWeights->at(row, col);
 
 //       originalWeight = this->momentum * originalWeight;
 //       deltaWeight    = this->learningRate * deltaWeight;
@@ -196,7 +157,7 @@ void NeuralNetwork::backPropagation() {
 //     hiddenDerivedValues = this->layers.at(i)->matrixifyDerivedValues;
 
 //     for(int colCounter = 0; colCounter < hiddenDerivedValues->getColumns(); colCounter++) {
-//       double  g = gradients->getValue(0, colCounter) * hiddenDerivedValues->getValue(0, colCounter);
+//       double  g = gradients->getValue(0, colCounter) * hiddenDerivedValues->at(0, colCounter);
 //       gradients->setValue(0, colCounter, g);
 //     }
 
@@ -224,8 +185,8 @@ void NeuralNetwork::backPropagation() {
 
 //     for(int row = 0; row < tempNewWeights->getRows(); row++) {
 //       for(int col = 0; col < tempNewWeights->getColumns(); col++) {
-//         double originalWeight  = this->weightMatrices.at(i - 1)->getValue(row, col);
-//         double deltaWeight     = deltaWeights->getValue(row, col);
+//         double originalWeight  = this->weightMatrices.at(i - 1)->at(row, col);
+//         double deltaWeight     = deltaWeights->at(row, col);
 
 //         originalWeight = this->momentum * originalWeight;
 //         deltaWeight    = this->learningRate * deltaWeight;

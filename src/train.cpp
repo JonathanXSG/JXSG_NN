@@ -1,10 +1,10 @@
 #include <iostream>
 #include <vector>
-#include <stdio.h>
+#include <cstdio>
 #include <fstream>
 #include <streambuf>
 #include <ostream>
-#include <time.h>
+#include <ctime>
 #include "../headers/json.hpp"
 #include "../headers/NeuralNetwork.hpp"
 #include "../headers/utils/Misc.hpp"
@@ -31,10 +31,10 @@ int main(int argc, char **argv) {
     std::vector<std::vector<double>> testData;
     std::vector<std::vector<double>> testLabelData;
     if (strcmp(argv[1], "../config/MNIST.json") == 0) {
-//        trainingData.resize(60000);
-//        labelData.resize(10000);
-//        testData.resize(60000);
-//        testLabelData.resize(10000);
+        trainingData.reserve(60000);
+        labelData.reserve(60000);
+        testData.reserve(10000);
+        testLabelData.reserve(10000);
         utils::Misc::readMNIST(trainingData, labelData, testData, testLabelData);
     } else {
         trainingData = utils::Misc::fetchData(n->config.trainingFile);

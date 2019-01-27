@@ -5,14 +5,14 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
-#include <assert.h>
+#include <cassert>
 #include "../../headers/NeuralNetwork.hpp"
 #include "../json.hpp"
 
 namespace utils {
     class Misc {
     public:
-        static std::vector<std::vector<double> > fetchData(std::string path) {
+        static std::vector<std::vector<double> > fetchData(const std::string &path) {
             std::vector<std::vector<double> > data;
 
             std::ifstream infile(path);
@@ -35,7 +35,7 @@ namespace utils {
 
         static void printSyntax() {
             std::cout << "Syntax:" << std::endl;
-            std::cout << "train [configFile]" << std::endl;
+            std::cout << "JXSG_NN [configFile]" << std::endl;
         }
 
         static void printMatrix(std::vector<std::vector<double>> matrix) {
@@ -123,21 +123,22 @@ namespace utils {
                 n_rows = ReverseInt(n_rows);
                 file.read((char *) &n_cols, sizeof(n_cols));
                 n_cols = ReverseInt(n_cols);
-                for (int i = 0; i < number_of_images; ++i) {
+                for (unsigned i = 0; i < number_of_images; ++i) {
                     std::vector<double> tp;
+                    tp.reserve(static_cast<unsigned int>(n_rows * n_cols));
                     for (int r = 0; r < n_rows; ++r) {
                         for (int c = 0; c < n_cols; ++c) {
                             unsigned char temp = 0;
                             file.read((char *) &temp, sizeof(temp));
                             if (temp > 0) {
-                                tp.push_back(1.0);
+                                tp.emplace_back(1.0);
                             } else {
-                                tp.push_back(0);
+                                tp.emplace_back(0);
                             }
-//                            tp.push_back((double) temp/255);
+//                            tp.emplace_back((double) temp/255);
                         }
                     }
-                    vec.push_back(tp);
+                    vec.emplace_back(tp);
                 }
             }
         }
@@ -151,13 +152,12 @@ namespace utils {
                 magic_number = ReverseInt(magic_number);
                 file.read((char *) &number_of_images, sizeof(number_of_images));
                 number_of_images = ReverseInt(number_of_images);
-                for (int i = 0; i < number_of_images; ++i) {
+                for (unsigned i = 0; i < number_of_images; ++i) {
                     unsigned char temp = 0;
                     file.read((char *) &temp, sizeof(temp));
-//                    std::vector<double> vect{((double) temp)};
                     std::vector<double> vect(10, 0.0);
                     vect.at((unsigned  int)temp) = 1.0;
-                    vec.push_back(vect);
+                    vec.emplace_back(vect);
                 }
             }
         }
