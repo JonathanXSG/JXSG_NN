@@ -64,6 +64,11 @@ void Layer::derive(){
                 this->derivedNeurons->at(i) = (1.0 - (this->activatedNeurons->at(i) * this->activatedNeurons->at(i)));
             }
             break;
+        case A_SIGM:
+            for(unsigned i=0; i<this->neurons->size(); i++){
+                this->derivedNeurons->at(i) = (this->activatedNeurons->at(i) * (1.0 - this->activatedNeurons->at(i)));
+            }
+            break;
         case A_RELU:
             for(unsigned i=0; i<this->neurons->size(); i++){
                 this->derivedNeurons->at(i) = this->activatedNeurons->at(i) > 0 ? 1.0 : 0.0;
@@ -72,11 +77,6 @@ void Layer::derive(){
         case A_LeakyRELU:
             for(unsigned i=0; i<this->neurons->size(); i++){
                 this->derivedNeurons->at(i) = this->activatedNeurons->at(i) > 0.0 ? 1.0 : 1.0/100.0;
-            }
-            break;
-        case A_SIGM:
-            for(unsigned i=0; i<this->neurons->size(); i++){
-                this->derivedNeurons->at(i) = (this->activatedNeurons->at(i) * (1.0 - this->activatedNeurons->at(i)));
             }
             break;
         case A_LINE:

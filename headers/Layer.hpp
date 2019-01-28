@@ -13,8 +13,8 @@ enum LAYER_TYPE {
 
 enum NN_ACTIVATION {
     A_TANH        = 0,
-    A_RELU        = 1,
-    A_SIGM        = 2,
+    A_SIGM        = 1,
+    A_RELU        = 2,
     A_LeakyRELU   = 3,
     A_LINE        = 4,
     A_SOFTMAX     = 5

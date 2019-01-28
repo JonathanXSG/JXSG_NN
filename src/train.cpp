@@ -26,28 +26,33 @@ int main(int argc, char **argv) {
 
     NeuralNetwork *n = new NeuralNetwork(utils::Misc::buildConfig(json::parse(str)));
 
+    utils::Misc::printHeader(n->config);
+
     std::vector<std::vector<double>> trainingData;
     std::vector<std::vector<double>> labelData;
-    std::vector<std::vector<double>> testData;
-    std::vector<std::vector<double>> testLabelData;
-    if (strcmp(argv[1], "../config/MNIST.json") == 0) {
-        trainingData.reserve(60000);
-        labelData.reserve(60000);
-        testData.reserve(10000);
-        testLabelData.reserve(10000);
-        utils::Misc::readMNIST(trainingData, labelData, testData, testLabelData);
-    } else {
-        trainingData = utils::Misc::fetchData(n->config.trainingFile);
-        labelData = utils::Misc::fetchData(n->config.labelsFile);
-    }
 
-    std::cout << "Training Data Size: " << trainingData.size() << std::endl;
-    std::cout << "Label Data Size: " << labelData.size() << std::endl;
+    utils::Misc::fetchData(n->config.trainingFile, trainingData);
+    utils::Misc::fetchData(n->config.labelsFile, labelData);
+
+    std::cout << "Training Data Size:\t" << trainingData.size() << std::endl;
+    std::cout << "Label Data Size:\t" << labelData.size() << std::endl << std::endl;
 
     n->train(trainingData, labelData);
 
-    std::cout << "Done! Writing to " << n->config.weightsFile << "..." << std::endl;
-    n->saveWeights(n->config.weightsFile);
+    std::time_t t = std::time(0);
+    std::tm* now = std::localtime(&t);
+    std::stringstream ss;
+    ss << "../weights/" << n->config.weightsFile << " "
+       << (now->tm_year + 1900) << '-'
+       << (now->tm_mon + 1) << '-'
+       << now->tm_mday << '-'
+       << now->tm_hour << '-'
+       << now->tm_min << '-'
+       << now->tm_sec << ".json";
+    std::string filename = ss.str();
+
+    std::cout << "Done! Writing to " << filename << "..." << std::endl;
+    n->saveWeights(filename);
     auto finish = std::chrono::high_resolution_clock::now();
     std::cout << std::chrono::duration_cast<std::chrono::nanoseconds>(finish - start).count() << "ns\n";
     return 0;

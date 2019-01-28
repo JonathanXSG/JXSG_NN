@@ -11,22 +11,15 @@ public:
     Matrix(unsigned rows, unsigned columns, bool isRandom) {
         this->rows = rows;
         this->columns = columns;
-        this->values.reserve(rows);
+        this->values.reserve(rows*columns);
 
-        std::random_device rd;
         std::mt19937 gen(rd());
-        double const distributionRangeHalfWidth = (2.4 / 784);
+        double const distributionRangeHalfWidth = (2.4 / rows*columns);
         double const standardDeviation = distributionRangeHalfWidth * 2 / 6;
-        std::normal_distribution<> normalDistribution(0.0, 0.5 );
+        std::normal_distribution<> normalDistribution(0.0,distributionRangeHalfWidth);
 
-        for (int i = 0; i < rows; i++) {
-            std::vector<double> colValues;
-            colValues.reserve(columns);
-            for (int j = 0; j < columns; j++) {
-                double r = isRandom ? normalDistribution(gen) : 0.00;
-                colValues.emplace_back(r);
-            }
-            this->values.emplace_back(colValues);
+        for (int i = 0; i < rows*columns; i++) {
+            this->values.emplace_back(isRandom ? normalDistribution(gen) : 0.00);
         }
     }
 
@@ -43,24 +36,32 @@ public:
     }
 
     void printToConsole() {
-        for (int i = 0; i < this->rows; i++) {
-            for (int j = 0; j < this->columns; j++) {
-                std::cout << std::setprecision(5) << this->values.at(i).at(j) << "\t";
+        for (unsigned i = 0; i < this->rows; i++) {
+            for (unsigned j = 0; j < this->columns; j++) {
+                std::cout << std::setprecision(5) << this->at(i, j) << "\t";
             }
             std::cout << std::endl;
         }
     }
 
     void setValue(unsigned r, unsigned c, double v) {
-        this->values.at(r).at(c) = v;
+        this->values.at(r*std::min(rows,columns) + c) = v;
     }
 
     double &at(unsigned r, unsigned c) {
-        return this->values.at(r).at(c);
+        return this->values.at(r*this->columns + c);
     }
 
-    std::vector<std::vector<double> > getValues() {
-        return this->values;
+    std::vector<std::vector<double>> getValues() {
+        auto vect = std::vector<std::vector<double>>(
+                rows,
+                std::vector<double>(columns));
+        for (unsigned i = 0; i < this->rows; i++) {
+            for (unsigned j = 0; j < this->columns; j++) {
+                vect[i][j] = this->at(i, j);
+            }
+        }
+        return vect;
     }
 
     unsigned getRows() {
@@ -74,8 +75,9 @@ public:
 private:
     unsigned rows;
     unsigned columns;
+    std::random_device rd;
 
-    std::vector<std::vector<double> > values;
+    std::vector<double> values;
 };
 
 #endif

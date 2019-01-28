@@ -12,6 +12,7 @@ NeuralNetwork::NeuralNetwork(ANNConfig config) {
     this->hiddenActivationType = config.hActivation;
     this->outputActivationType = config.oActivation;
     this->costFunctionType = config.cost;
+    this->gradientDescent = config.gradientDescent;
 
     // Initializing all layers
     this->layers.reserve(topologySize);
@@ -62,14 +63,30 @@ void NeuralNetwork::saveWeights(std::string filename) {
         weightSet.emplace_back(weightMatrix->getValues());
     }
 
-    j["weights"] = weightSet;
-    j["topology"] = this->topology;
-    j["learningRate"] = this->learningRate;
-    j["momentum"] = this->momentum;
-    j["bias"] = this->bias;
+    j["weights"]        = weightSet;
+    j["topology"]       = this->topology;
+    j["learningRate"]   = this->learningRate;
+    j["momentum"]       = this->momentum;
+    j["bias"]           = this->bias;
 
     std::ofstream o(filename);
     o << std::setw(4) << j << std::endl;
+}
+
+void NeuralNetwork::loadWeights(std::string filename) {
+    std::ifstream stream(filename);
+    json jWeights;
+    stream >> jWeights;
+
+    std::vector<std::vector<std::vector<double> > > temp = jWeights["weights"];
+
+    for (unsigned i = 0; i < this->weightMatrices.size(); i++) {
+        for (unsigned r = 0; r < this->weightMatrices.at(i)->getRows(); r++) {
+            for (unsigned c = 0; c < this->weightMatrices.at(i)->getColumns(); c++) {
+                this->weightMatrices.at(i)->at(r, c) = temp.at(i).at(r).at(c);
+            }
+        }
+    }
 }
 
 void NeuralNetwork::setCurrentInput(std::vector<double>& input) {

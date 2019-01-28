@@ -1,0 +1,16 @@
+{
+    "topology": [3, 2, 2],
+    "learningRate": 0.05,
+    "momentum": 1.0,
+    "bias": 1.0,
+    "epochs": 1000,
+    "batch" : 0,
+    "iterations" : 0,
+    "hActivation": 0,
+    "oActivation": 0,
+    "gradientDescent" : 0,
+    "trainingFile": "../data/data1.csv",
+    "labelsFile": "../data/label1.csv",
+    "weightsFile": "TEST",
+    "reportFile": "TEST"
+}

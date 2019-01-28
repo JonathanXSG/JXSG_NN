@@ -28,7 +28,8 @@ struct ANNConfig {
     double bias;
     double learningRate;
     double momentum;
-    int epoch;
+    int epochs;
+    int iterations;
     NN_ACTIVATION hActivation;
     NN_ACTIVATION oActivation;
     NN_COST cost;
@@ -37,6 +38,7 @@ struct ANNConfig {
     std::string trainingFile;
     std::string labelsFile;
     std::string weightsFile;
+    std::string reportFile;
 };
 
 class NeuralNetwork {
