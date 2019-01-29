@@ -3,11 +3,7 @@
 ```
 $ cd build
 $ cmake .
-$ make
-
-or 
-$ cd build
-$ cmake --build .
+$  cmake --build .
 ```
 
 # Usage
@@ -15,6 +11,7 @@ $ cmake --build .
 ## Training
 ```
 $ JXSG_NN [path/to/config.json]
+$ JXSG_NN ../config/MNIST.json
 ```
 
 
@@ -23,8 +20,10 @@ $ JXSG_NN [path/to/config.json]
 ```
 https://steemit.com/ai/@ralampay/training-a-neural-network-a-numerical-example-part-1
 http://dprogrammer.org/gradient-descent-algorithm
+http://mccormickml.com/2014/03/04/gradient-descent-derivation/
 https://www.youtube.com/watch?v=L_PByyJ9g-I&t=2439s
 https://www.youtube.com/watch?v=z8DY5DndmxI
+http://www.1-4-5.net/~dmm/ml/mse.pdf
 
 Activation Functions
 https://towardsdatascience.com/activation-functions-neural-networks-1cbd9f8d91d6

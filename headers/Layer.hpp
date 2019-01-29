@@ -2,38 +2,65 @@
 #define _LAYER_HPP_
 
 #include <iostream>
-#include "Neuron.hpp"
+#include <algorithm>
 #include "Matrix.hpp"
-enum LAYER_TYPE{
-  INPUT,
-  HIDDEN_FULLYCONNECTED,
-  OUTPUT
+
+enum LAYER_TYPE {
+    INPUT,
+    HIDDEN_FULLYCONNECTED,
+    OUTPUT
 };
 
-class Layer
-{
+enum NN_ACTIVATION {
+    A_TANH        = 0,
+    A_SIGM        = 1,
+    A_RELU        = 2,
+    A_LeakyRELU   = 3,
+    A_LINE        = 4,
+    A_SOFTMAX     = 5
+};
+
+class Layer {
 public:
-  Layer(int size, LAYER_TYPE layerType, NN_ACTIVATION activationType = A_RELU);
+    Layer(unsigned size, LAYER_TYPE layerType, NN_ACTIVATION activationType = A_RELU);
 
-  void setVal(int i, double v);
+    void activate();
 
-  Matrix *matrixifyValues();
-  Matrix *matrixifyActivatedValues();
-  Matrix *matrixifyDerivedValues();
+    void derive();
 
-  std::vector<double> getActivatedValues();
+    void setVal(unsigned i, double v) {
+        this->neurons->at(i) = v;
+    }
 
-  std::vector<Neuron *> getNeurons() { 
-    return this->neurons; 
-  }
-  void setNeuron(std::vector<Neuron *> neurons) { 
-    this->neurons = neurons; 
-  }
+    void setNeurons(std::vector<double> *neurons) {
+        this->neurons = neurons;
+    }
+
+    Matrix *matrixifyValues();
+
+    Matrix *matrixifyActivatedValues();
+
+    Matrix *matrixifyDerivedValues();
+
+    std::vector<double> *getNeurons() {
+        return this->neurons;
+    }
+
+    std::vector<double> *getActivatedValues() {
+        return activatedNeurons;
+    }
+
+    std::vector<double> *getDerivedValues() {
+        return derivedNeurons;
+    }
 
 private:
-  int size;
-  LAYER_TYPE layerType;
-  std::vector<Neuron *> neurons;
+    unsigned size;
+    LAYER_TYPE layerType;
+    NN_ACTIVATION activationType;
+    std::vector<double> *neurons;
+    std::vector<double> *activatedNeurons;
+    std::vector<double> *derivedNeurons;
 };
 
 #endif

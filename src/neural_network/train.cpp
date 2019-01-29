@@ -1,49 +1,56 @@
 #include "../../headers/NeuralNetwork.hpp"
+#include <chrono>
 
 void NeuralNetwork::train(
-        std::vector<std::vector<double>> trainingData,
-        std::vector<std::vector<double>> labelData
+        std::vector<std::vector<double>> &trainingData,
+        std::vector<std::vector<double>> &labelData
 ) {
+    std::time_t t = std::time(0);
+    std::tm* now = std::localtime(&t);
+    std::stringstream ss;
+    ss << "../reports/" << this->config.reportFile << " "
+       << (now->tm_year + 1900) << '-'
+       << (now->tm_mon + 1) << '-'
+       << now->tm_mday << '-'
+       << now->tm_hour << '-'
+       << now->tm_min << '-'
+       << now->tm_sec
+       << ".csv";
+    std::ofstream report(ss.str());
+    report << "Epoch," << " Loss/Cost" << "\n";
+    std::cout << "\t\t" << "Epoch: " << "\t\t" << "Loss/Cost: " << std::endl;
 
-    for (int i = 0; i < this->config.epoch; i++) {
-        for (int tIndex = 0; tIndex < 1000; tIndex++) {
-            std::vector<double> input = trainingData.at(tIndex);
-            std::vector<double> target = labelData.at(tIndex);
+    for (int i = 0; i < this->config.epochs; i++) {
+        auto start = std::chrono::high_resolution_clock::now();
+        for (unsigned tIndex = 0; tIndex < labelData.size(); tIndex++) {
 
-            this->setCurrentInput(input);
-            this->setCurrentTarget(target);
-            // this->printToConsole();
-//            std::cout << "feed forward" << std::endl;
-            this->feedForward();
-//       this->printToConsole();
-//            std::cout << "errors" << std::endl;
-            this->setErrors();
+            this->setCurrentInput(trainingData.at(tIndex));
+            this->setCurrentTarget(labelData.at(tIndex));
+            for(int iterations = 0; iterations < this->config.iterations; iterations++) {
+                this->feedForward();
+                this->setErrors();
 
-
-//            std::cout << "back prop" << std::endl;
-            if (gradientDescent == STOCHASTIC)
-                this->backPropagation();
-            else if (gradientDescent == MINI_BATCH && i % this->config.batch == 0)
-                this->backPropagation();
-            else if (gradientDescent == BATCH && (this->config.epoch - 1) == i)
-                this->backPropagation();
-
-
+                if (gradientDescent == STOCHASTIC)
+                    this->backPropagation();
+                else if (gradientDescent == MINI_BATCH && i % this->config.batch == 0)
+                    this->backPropagation();
+                else if (gradientDescent == BATCH && (this->config.epochs - 1) == i)
+                    this->backPropagation();
+            }
+            if (tIndex % (labelData.size() / 10) == 0) {
+                std::cout << "*";
+//                std::cout << "Sample: " << tIndex << " Loss/Cost : " << this->error << ""
+//                          << std::endl;
+            }
         }
-//        std::cout << target.size() << std::endl;
-//        this->layers.at(this->layers.size()-1)->matrixifyActivatedValues()->printToConsole();
-//        std::cout << this->layers.at(this->layers.size()-1)->getNeurons().size() << std::endl;
+        auto finish = std::chrono::high_resolution_clock::now();
 
-        std::cout << "Output: ";
-        this->layers.at(this->layers.size()-1)->matrixifyActivatedValues()->printToConsole();
-        std::cout << "\nTarget: ";
-        for (double j : this->target) {
-            std::cout << std::setprecision(5) << j << "\t";
-        }
-        std::cout << std::endl;
-        std::cout << std::endl;
-        std::cout << "Epoch: " << i + 1 << "Loss/Cost : " << this->error << ""
-                  << std::endl;
+        report << i+1 << ", " << this->error << "\n";
+        std::cout << "\t" << i + 1 << " / " << this->config.epochs << "\t\t"
+            << this->error << "\t"
+            <<std::chrono::duration_cast<std::chrono::microseconds>(finish - start).count()
+            << " us" << std::endl;
     }
+    report.close();
 
 }

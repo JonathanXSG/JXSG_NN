@@ -1,48 +1,48 @@
 #include "../../headers/NeuralNetwork.hpp"
 
 void NeuralNetwork::setErrors() {
-  switch(costFunctionType) {
-    case(COST_MSE): this->setErrorMSE(); break;
-    default: this->setErrorMSE(); break;
-  }
+    switch (costFunctionType) {
+        case (COST_MSE):
+            this->setErrorMSE();
+            break;
+        case (COST_CEE):
+            this->setErrorCEE();
+            break;
+        default:
+            this->setErrorMSE();
+            break;
+    }
 }
 
-//  Cost Fuction Mean Squared Error
+//  Cost Function Mean Squared Error
 void NeuralNetwork::setErrorMSE() {
-  int outputLayerIndex                = this->layers.size() - 1;
-  std::vector<Neuron *> outputNeurons = this->layers.at(outputLayerIndex)->getNeurons();
+    unsigned outputLayerIndex = this->layers.size() - 1;
+    std::vector<double> *outputNeurons = this->layers.at(outputLayerIndex)->getActivatedValues();
 
-  this->error = 0.00;
+    this->error = 0.00;
 
-  for(int i = 0; i < target.size(); i++) {
-    double targetValue  = target.at(i);
-    double oActiatedvValue  = outputNeurons.at(i)->getActivatedValue();
-
-    // Loss function on each neuron
-    // ( |targetValue - oActivatedValue| )^2 \ 2
-    errors.at(i)        = 0.5 * pow(abs((targetValue - oActiatedvValue)), 2);
-    derivedErrors.at(i) = (oActiatedvValue - targetValue);
-
-    this->error += errors.at(i);
-  }
+    for (unsigned i = 0; i < target->size(); i++) {
+        // Loss function on each neuron
+        errors.at(i) = (outputNeurons->at(i) - target->at(i)) * (outputNeurons->at(i) - target->at(i));
+        derivedErrors.at(i) = (outputNeurons->at(i) - target->at(i));
+        this->error += errors.at(i);
+    }
+    this->error *= 0.5;
 }
 
 // Cost Function: Cross Entropy Error
-void NeuralNetwork::setErrorCEE(){
-  int outputLayerIndex                = this->layers.size() - 1;
-  std::vector<Neuron *> outputNeurons = this->layers.at(outputLayerIndex)->getNeurons();
+void NeuralNetwork::setErrorCEE() {
+    unsigned outputLayerIndex = this->layers.size() - 1;
+    std::vector<double> *outputNeurons = this->layers.at(outputLayerIndex)->getActivatedValues();
 
-  this->error = 0.00;
+    this->error = 0.00;
 
-  for(int i = 0; i < target.size(); i++) {
-    double targetValue      = target.at(i);
-    double oActiatedvValue  = outputNeurons.at(i)->getActivatedValue();
+    for (unsigned i = 0; i < target->size(); i++) {
+        // Loss function on each neuron
+        errors.at(i) = -target->at(i) * log(outputNeurons->at(i));
+        // Derivative of Loss function in relation to the output
+        derivedErrors.at(i) = -target->at(i) / outputNeurons->at(i);;
 
-    // Loss function on each neuron
-    errors.at(i)        = - targetValue*log(oActiatedvValue);
-    // Derivative of Loss function in relation to the output
-    derivedErrors.at(i) = - targetValue / oActiatedvValue;;
-
-    this->error += errors.at(i);
-  }
+        this->error += errors.at(i);
+    }
 }

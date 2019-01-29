@@ -1,14 +1,16 @@
 {
-    "topology": [784, 20, 10],
-    "learningRate": 0.05,
-    "momentum": 0.5,
-    "bias": 1.0,
-    "epoch": 10,
-    "hActivation": 2,
-    "oActivation": 2,
-    "gradientDescent" : 0,
+    "topology": [784, 128, 10],
+    "learningRate": 0.001,
+    "momentum": 0.9,
+    "bias": 0.0,
+    "epochs": 20,
     "batch" : 0,
-    "trainingFile": "../data/data1.csv",
-    "labelsFile": "../data/label1.csv",
-    "weightsFile": "../weights/1.json"
-  }
+    "iterations" : 1,
+    "hActivation": 1,
+    "oActivation": 1,
+    "gradientDescent" : 0,
+    "trainingFile": "../data/train-images.idx3-ubyte",
+    "labelsFile": "../data/train-labels.idx1-ubyte",
+    "weightsFile": "MNIST",
+    "reportFile": "MNIST"
+}

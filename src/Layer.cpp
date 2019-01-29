@@ -1,61 +1,121 @@
 #include "../headers/Layer.hpp"
 
-Layer::Layer(int size, LAYER_TYPE layerType, NN_ACTIVATION activationType) {
-  this->size = size;
-  this->layerType = layerType;
+Layer::Layer(unsigned size, LAYER_TYPE layerType, NN_ACTIVATION activationType) {
+    this->size = size;
+    this->layerType = layerType;
+    this->activationType = activationType;
 
-  double totalActivated = 0.0;
-
-  for(int i = 0; i < size; i++) {
-    Neuron *n = new Neuron(0.000000000, activationType);
-    if(layerType == OUTPUT) totalActivated += n->getActivatedValue();
-    this->neurons.push_back(n);
-  }
-
-  // If the layer is the output and the activation function is SOFTMAX then 
-  // some more computation is needed
-  if(layerType == OUTPUT && activationType == A_SOFTMAX){
-    for(Neuron *n : this->neurons){
-      n->setActivatedVal(n->getActivatedValue() / totalActivated);
-    }
-  }
+    this->neurons = new std::vector<double>(size , 0.000000000);
+    this->activatedNeurons = new std::vector<double>(size , 0.000000000);
+    this->derivedNeurons = new std::vector<double>(size , 0.000000000);
 }
 
-void Layer::setVal(int i, double v) {
-  this->neurons.at(i)->setVal(v);
+void Layer::activate() {
+    switch (activationType) {
+        case A_TANH:{
+            for (unsigned i = 0; i < this->neurons->size(); i++) {
+                this->activatedNeurons->at(i) = tanh(this->neurons->at(i));
+            }
+            break;
+        }
+        case A_SIGM:{
+            for (unsigned i = 0; i < this->neurons->size(); i++) {
+                this->activatedNeurons->at(i) = (1.0 / (1.0 + exp(-this->neurons->at(i))));
+            }
+            break;
+        }
+        case A_RELU:{
+            for (unsigned i = 0; i < this->neurons->size(); i++) {
+                this->activatedNeurons->at(i) = (this->neurons->at(i) > 0.0 ? this->neurons->at(i) : 0.0);
+            }
+            break;
+        }
+        case A_LeakyRELU:{
+            for (unsigned i = 0; i < this->neurons->size(); i++) {
+                this->activatedNeurons->at(i) = this->neurons->at(i) > 0.0 ? this->neurons->at(i) : this->neurons->at(i) / 100;
+            }
+            break;
+        }
+        case A_LINE:{
+            for (unsigned i = 0; i < this->neurons->size(); i++) {
+                this->activatedNeurons->at(i) = this->neurons->at(i);
+            }
+            break;
+        }
+        case A_SOFTMAX: {
+            double max = *max_element(this->neurons->begin(), this->neurons->end());
+            double sum = std::accumulate(this->neurons->begin(), this->neurons->end(), 0.0);
+
+            for (unsigned i = 0; i < this->neurons->size(); i++) {
+                this->activatedNeurons->at(i) = exp(this->neurons->at(i) - max) / sum;
+            }
+            break;
+        }
+        default:
+            for (unsigned i = 0; i < this->neurons->size(); i++) {
+                this->activatedNeurons->at(i) = (1.0 / (1.0 + exp(-this->neurons->at(i))));
+            }
+    }
+}
+void Layer::derive(){
+    switch (activationType){
+        case A_TANH:
+            for(unsigned i=0; i<this->neurons->size(); i++){
+                this->derivedNeurons->at(i) = (1.0 - (this->activatedNeurons->at(i) * this->activatedNeurons->at(i)));
+            }
+            break;
+        case A_SIGM:
+            for(unsigned i=0; i<this->neurons->size(); i++){
+                this->derivedNeurons->at(i) = (this->activatedNeurons->at(i) * (1.0 - this->activatedNeurons->at(i)));
+            }
+            break;
+        case A_RELU:
+            for(unsigned i=0; i<this->neurons->size(); i++){
+                this->derivedNeurons->at(i) = this->activatedNeurons->at(i) > 0 ? 1.0 : 0.0;
+            }
+            break;
+        case A_LeakyRELU:
+            for(unsigned i=0; i<this->neurons->size(); i++){
+                this->derivedNeurons->at(i) = this->activatedNeurons->at(i) > 0.0 ? 1.0 : 1.0/100.0;
+            }
+            break;
+        case A_LINE:
+            for(unsigned i=0; i<this->neurons->size(); i++){
+                this->derivedNeurons->at(i) = 1.0;
+            }
+            break;
+        case A_SOFTMAX:
+            for(unsigned i=0; i<this->neurons->size(); i++){
+                this->derivedNeurons->at(i) = this->activatedNeurons->at(i) * (1.0 - this->activatedNeurons->at(i));
+            }
+            break;
+        default:
+            for(unsigned i=0; i<this->neurons->size(); i++){
+                this->derivedNeurons->at(i) = (this->activatedNeurons->at(i) * (1.0 - this->activatedNeurons->at(i)));
+            }
+    }
 }
 
 Matrix *Layer::matrixifyValues() {
-  Matrix *m = new Matrix(1, this->neurons.size(), false);
-  for(int i = 0; i < this->neurons.size(); i++) {
-    m->setValue(0, i, this->neurons.at(i)->getVal());
-  }   
-  return m;
+    auto *m = new Matrix(1, this->neurons->size(), false);
+    for (unsigned i = 0; i < this->neurons->size(); i++) {
+        m->setValue(0, i, this->neurons->at(i));
+    }
+    return m;
 }
 
 Matrix *Layer::matrixifyActivatedValues() {
-  Matrix *m = new Matrix(1, this->neurons.size(), false);
-    for(int i = 0; i < this->neurons.size(); i++) {
-      m->setValue(0, i, this->neurons.at(i)->getActivatedValue());
-    }   
-  return m;
+    auto *m = new Matrix(1, this->neurons->size(), false);
+    for (unsigned i = 0; i < this->neurons->size(); i++) {
+        m->setValue(0, i, this->activatedNeurons->at(i));
+    }
+    return m;
 }
 
 Matrix *Layer::matrixifyDerivedValues() {
-  Matrix *m = new Matrix(1, this->neurons.size(), false);
-  for(int i = 0; i < this->neurons.size(); i++) {
-    m->setValue(0, i, this->neurons.at(i)->getDerivedValue());
-  }
-  return m;
-}
-
-std::vector<double> Layer::getActivatedValues() {
-  std::vector<double> ret;
-
-  for(int i = 0; i < this->neurons.size(); i++) {
-    double v = this->neurons.at(i)->getActivatedValue();
-    ret.push_back(v);
-  }
-
-  return ret;
+    auto *m = new Matrix(1, this->neurons->size(), false);
+    for (unsigned i = 0; i < this->neurons->size(); i++) {
+        m->setValue(0, i, this->derivedNeurons->at(i));
+    }
+    return m;
 }

@@ -5,18 +5,25 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
-#include <assert.h>
+#include <cassert>
 #include "../Matrix.hpp"
 
-using namespace std;
 
-namespace utils
-{
-  class Math
-  {
-  public:
-    static void multiplyMatrix(Matrix *a, Matrix *b, Matrix *c);
-  };
+namespace utils {
+    class Math {
+    public:
+        static void multiplyMatrix(Matrix *a, Matrix *b, Matrix *c) {
+            for (int i = 0; i < a->getRows(); i++) {
+                for (int j = 0; j < b->getColumns(); j++) {
+                    for (int k = 0; k < b->getRows(); k++) {
+                        double p = a->at(i, k) * b->at(k, j);
+                        double newVal = c->at(i, j) + p;
+                        c->setValue(i, j, newVal);
+                    }
+                }
+            }
+        }
+    };
 }
 
 #endif
