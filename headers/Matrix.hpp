@@ -16,7 +16,7 @@ public:
         std::mt19937 gen(rd());
         double const distributionRangeHalfWidth = (2.4 / rows*columns);
         double const standardDeviation = distributionRangeHalfWidth * 2 / 6;
-        std::normal_distribution<> normalDistribution(0.0,distributionRangeHalfWidth);
+        std::normal_distribution<> normalDistribution(0.0,0.5);
 
         for (int i = 0; i < rows*columns; i++) {
             this->values.emplace_back(isRandom ? normalDistribution(gen) : 0.00);

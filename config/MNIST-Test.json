@@ -10,8 +10,8 @@
     "oActivation": 1,
     "gradientDescent" : 0,
     "costFunction" : 0,
-    "dataFile": "../data/train-images.idx3-ubyte",
-    "labelsFile": "../data/train-labels.idx1-ubyte",
-    "weightsFile": "MNIST",
-    "reportFile": "MNIST"
+    "dataFile": "../data/t10k-images.idx3-ubyte",
+    "labelsFile": "../data/t10k-labels.idx1-ubyte",
+    "weightsFile": "MNIST-Test",
+    "reportFile": "MNIST-Test"
 }

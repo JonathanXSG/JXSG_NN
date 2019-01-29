@@ -32,10 +32,10 @@ struct ANNConfig {
     int iterations;
     NN_ACTIVATION hActivation;
     NN_ACTIVATION oActivation;
-    NN_COST cost;
+    NN_COST costFunction;
     GRADIENT_DESCENT gradientDescent;
     int batch;
-    std::string trainingFile;
+    std::string dataFile;
     std::string labelsFile;
     std::string weightsFile;
     std::string reportFile;
@@ -46,6 +46,11 @@ public:
     explicit NeuralNetwork(ANNConfig config);
 
     void train(
+            std::vector<std::vector<double>>& input,
+            std::vector<std::vector<double>>& target
+    );
+
+    void test(
             std::vector<std::vector<double>>& input,
             std::vector<std::vector<double>>& target
     );
@@ -64,7 +69,11 @@ public:
         return this->layers.at(index)->getNeurons();
     }
 
-    std::vector<double>* getActivatedValues(unsigned index) {
+    std::vector<double>* getActivatedNeurons(unsigned index) {
+        return this->layers.at(index)->getActivatedValues();
+    }
+
+    std::vector<double>* getDerivedNeurons(unsigned index) {
         return this->layers.at(index)->getActivatedValues();
     }
 
@@ -83,11 +92,7 @@ public:
     Matrix *getWeightMatrix(unsigned index) {
         return this->weightMatrices.at(index);
     };
-
-    void setNeuronValue(unsigned indexLayer, unsigned indexNeuron, double value) {
-        this->layers.at(indexLayer)->setVal(indexNeuron, value);
-    }
-
+    
     void setLayer(unsigned indexLayer,std::vector<double>& neurons) {
         this->layers.at(indexLayer)->setNeurons(&neurons);
     }

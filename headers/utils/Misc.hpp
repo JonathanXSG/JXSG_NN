@@ -17,10 +17,10 @@ namespace utils {
             std::string MNIST_TrainLabels = "../data/train-labels.idx1-ubyte";
             std::string MNIST_Test = "../data/t10k-images.idx3-ubyte";
             std::string MNIST_TestLabels = "../data/t10k-labels.idx1-ubyte";
-            if(path.compare(MNIST_Train) == 0 || path.compare(MNIST_Test) == 0){
+            if((path == MNIST_Train) || (path == MNIST_Test)){
                 read_Mnist(path, data);
             }
-            else if(path.compare(MNIST_TrainLabels) == 0 || path.compare(MNIST_TestLabels) == 0){
+            else if((path == MNIST_TrainLabels) || (path == MNIST_TestLabels)){
                 read_Mnist_Label(path, data);
             }
             else{
@@ -43,13 +43,13 @@ namespace utils {
 
         static void printSyntax() {
             std::cout << "Syntax:" << std::endl;
-            std::cout << "JXSG_NN [configFile]" << std::endl;
+            std::cout << "JXSG_NN [configFile] [--test , --train]" << std::endl;
         }
 
         static void printMatrix(std::vector<std::vector<double>> matrix) {
             for (int i = 0; i < matrix.size(); i++) {
                 for (int j = 0; j < matrix[0].size(); j++) {
-                    std::cout << std::setprecision(2) << matrix[i][j] << "\t";
+                    std::cout << std::setprecision(3) << matrix[i][j] << "\t";
                 }
                 std::cout << std::endl;
             }
@@ -62,16 +62,17 @@ namespace utils {
             double bias                     = configObject["bias"];
             double learningRate             = configObject["learningRate"];
             double momentum                 = configObject["momentum"];
-            int epochs                       = configObject["epochs"];
+            int epochs                      = configObject["epochs"];
             int batch                       = configObject["batch"];
             int iterations                  = configObject["iterations"];
-            NN_ACTIVATION hActivation   = configObject["hActivation"];
-            NN_ACTIVATION oActivation   = configObject["oActivation"];
-            GRADIENT_DESCENT gradDesc   = configObject["gradientDescent"];
-            std::string trainingFile    = configObject["trainingFile"];
-            std::string labelsFile      = configObject["labelsFile"];
-            std::string weightsFile     = configObject["weightsFile"];
-            std::string reportFile      = configObject["reportFile"];
+            NN_ACTIVATION hActivation       = configObject["hActivation"];
+            NN_ACTIVATION oActivation       = configObject["oActivation"];
+            GRADIENT_DESCENT gradDesc       = configObject["gradientDescent"];
+            NN_COST costFunction            = configObject["costFunction"];
+            std::string dataFile            = configObject["dataFile"];
+            std::string labelsFile          = configObject["labelsFile"];
+            std::string weightsFile         = configObject["weightsFile"];
+            std::string reportFile          = configObject["reportFile"];
 
             config.topology = topology;
             config.bias = bias;
@@ -83,9 +84,11 @@ namespace utils {
             config.hActivation = hActivation;
             config.oActivation = oActivation;
             config.gradientDescent = gradDesc;
-            config.trainingFile = trainingFile;
+            config.costFunction = costFunction;
+            config.dataFile = dataFile;
             config.labelsFile = labelsFile;
             config.weightsFile = weightsFile;
+            config.reportFile = reportFile;
 
             return config;
         }
@@ -107,7 +110,7 @@ namespace utils {
                       << "Output Activation:\t" << config.oActivation << std::endl
                       << "Gradient Descent:\t" << config.gradientDescent << std::endl
                       << std::endl
-                      << "Training image file:\t" << config.trainingFile << std::endl
+                      << "Training data file:\t" << config.dataFile << std::endl
                       << "Training label file:\t" << config.labelsFile << std::endl;
         }
 

@@ -25,7 +25,7 @@ void NeuralNetwork::backPropagation() {
                 for (unsigned c = 0; c < this->topology.at(i+1); c++) {
                     gradients->at(i).at(r) += (gradients->at(i+1).at(c) * this->weightMatrices.at(i)->at(r, c));
                 }
-                gradients->at(i).at(r) *= this->layers.at(i)->getDerivedValues()->at(r);
+                gradients->at(i).at(r) *= this->getDerivedNeurons(i)->at(r);
             }
         }
         // *********************************
@@ -35,17 +35,16 @@ void NeuralNetwork::backPropagation() {
             // gradient = dError * dNeuronValue
             for (unsigned r = 0; r < this->topology.at(indexOutputLayer); r++) {
                 gradients->at(indexOutputLayer).at(r) = this->derivedErrors.at(r) *
-                                                        this->layers.at(indexOutputLayer)->getDerivedValues()->at(r);
+                                                        this->getDerivedNeurons(indexOutputLayer)->at(r);
             }
         }
-
     }
 
     for (unsigned i = indexOutputLayer; i > 0; i--) {
         if (i != 1)
-            zActivatedValues = this->layers.at(i - 1)->getActivatedValues();
+            zActivatedValues = this->getActivatedNeurons(i - 1);
         else
-            zActivatedValues = this->layers.at(0)->getNeurons();
+            zActivatedValues = this->getNeurons(i - 1);
 
         // Calculating the new weights and deltaWeights
         for (unsigned row = 0; row < this->topology.at(i - 1); row++) {

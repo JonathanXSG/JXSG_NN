@@ -11,7 +11,7 @@ NeuralNetwork::NeuralNetwork(ANNConfig config) {
 
     this->hiddenActivationType = config.hActivation;
     this->outputActivationType = config.oActivation;
-    this->costFunctionType = config.cost;
+    this->costFunctionType = config.costFunction;
     this->gradientDescent = config.gradientDescent;
 
     // Initializing all layers
@@ -68,6 +68,9 @@ void NeuralNetwork::saveWeights(std::string filename) {
     j["learningRate"]   = this->learningRate;
     j["momentum"]       = this->momentum;
     j["bias"]           = this->bias;
+    j["hActivation"]    = this->hiddenActivationType;
+    j["oActivation"]    = this->outputActivationType;
+    j["reportFile"]     = this->config.reportFile;
 
     std::ofstream o(filename);
     o << std::setw(4) << j << std::endl;
@@ -75,10 +78,10 @@ void NeuralNetwork::saveWeights(std::string filename) {
 
 void NeuralNetwork::loadWeights(std::string filename) {
     std::ifstream stream(filename);
-    json jWeights;
-    stream >> jWeights;
+    json wightFile;
+    stream >> wightFile;
 
-    std::vector<std::vector<std::vector<double> > > temp = jWeights["weights"];
+    std::vector<std::vector<std::vector<double> > > temp = wightFile["weights"];
 
     for (unsigned i = 0; i < this->weightMatrices.size(); i++) {
         for (unsigned r = 0; r < this->weightMatrices.at(i)->getRows(); r++) {

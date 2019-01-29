@@ -7,15 +7,15 @@ void NeuralNetwork::feedForward() {
     for (unsigned i = 0; i < (this->topologySize - 1); i++) {
         // If it's not the input layer, get the activated values
         if (i != 0)
-            leftNeurons = this->getActivatedValues(i);
+            leftNeurons = this->getActivatedNeurons(i);
         // If it's the input layer, get the non-activated values
         else
             leftNeurons = this->getNeurons(i);
 
         leftWeights = this->getWeightMatrix(i);
 
-        fill(this->layers.at(i + 1)->getNeurons()->begin(),
-                this->layers.at(i + 1)->getNeurons()->end(),
+        fill(this->getNeurons(i + 1)->begin(),
+                this->getNeurons(i + 1)->end(),
                 this->bias);
 
         // Here we are basically multiplying the Neurons from the previous layer
@@ -23,7 +23,7 @@ void NeuralNetwork::feedForward() {
         // rightNeuron_x =  Sum ( leftNeuron_y * weight_x-y )
         for (unsigned r = 0; r < leftWeights->getRows(); r++) {
             for (unsigned c = 0; c < leftWeights->getColumns(); c++) {
-                this->layers.at(i+1)->getNeurons()->at(c) += (leftNeurons->at(r) * leftWeights->at(r, c));
+                this->getNeurons(i+1)->at(c) += (leftNeurons->at(r) * leftWeights->at(r, c));
             }
         }
 

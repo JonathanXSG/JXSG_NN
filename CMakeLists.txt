@@ -7,10 +7,11 @@ set (CMAKE_CXX_STANDARD 14)
 
 add_executable(
         JXSG_NN
-        src/train.cpp
+        src/main.cpp
         src/Layer.cpp
         src/neural_network/NeuralNetwork.cpp
         src/neural_network/setErrors.cpp
         src/neural_network/feedForward.cpp
         src/neural_network/backPropagation.cpp
-        src/neural_network/train.cpp)
+        src/neural_network/train.cpp
+        src/neural_network/test.cpp)
