@@ -3,15 +3,19 @@
 ```
 $ cd build
 $ cmake .
-$  cmake --build .
+$ cmake --build .
 ```
 
 # Usage
 
 ## Training
 ```
-$ JXSG_NN [path/to/config.json]
-$ JXSG_NN ../config/MNIST.json
+$ MP_NN [path/to/config.json] --train
+$ MP_NN ../config/MNIST.json --train
+
+$ MP_NN [path/to/config.json] --test [path/to/weights.json]
+$ MP_NN ../config/MNIST-Test.json --test ../weights/MNIST_2019-2-3-0-54-18.json
+
 ```
 
 

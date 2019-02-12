@@ -12,28 +12,28 @@
 
 using json = nlohmann::json;
 
-enum NN_COST {
-    COST_MSE,
-    COST_CEE
+enum CostFunc {
+    MSE,
+    CEE
 };
 
-enum GRADIENT_DESCENT {
-    STOCHASTIC = 0,
-    MINI_BATCH = 1,
-    BATCH = 2
+enum GradientDescent {
+    Stochastic,
+    MiniBatch,
+    Batch
 };
 
-struct ANNConfig {
+struct NNConfig {
     std::vector<unsigned> topology;
     double bias;
     double learningRate;
     double momentum;
     int epochs;
     int iterations;
-    NN_ACTIVATION hActivation;
-    NN_ACTIVATION oActivation;
-    NN_COST costFunction;
-    GRADIENT_DESCENT gradientDescent;
+    ActivationFunc hActivation;
+    ActivationFunc oActivation;
+    CostFunc costFunction;
+    GradientDescent gradientDescent;
     int batch;
     std::string dataFile;
     std::string labelsFile;
@@ -43,7 +43,7 @@ struct ANNConfig {
 
 class NeuralNetwork {
 public:
-    explicit NeuralNetwork(ANNConfig config);
+    explicit NeuralNetwork(NNConfig config);
 
     void train(
             std::vector<std::vector<double>>& input,
@@ -64,36 +64,36 @@ public:
     void backPropagation();
 
     void setErrors();
-    
-    std::vector<double>* getNeurons(unsigned index) {
+
+    inline std::vector<double>* getNeurons(unsigned index) {
         return this->layers.at(index)->getNeurons();
     }
 
-    std::vector<double>* getActivatedNeurons(unsigned index) {
+    inline std::vector<double>* getActivatedNeurons(unsigned index) {
         return this->layers.at(index)->getActivatedValues();
     }
 
-    std::vector<double>* getDerivedNeurons(unsigned index) {
+    inline std::vector<double>* getDerivedNeurons(unsigned index) {
         return this->layers.at(index)->getActivatedValues();
     }
 
-    Matrix *getNeuronMatrix(unsigned index) {
+    inline Matrix *getNeuronMatrix(unsigned index) {
         return this->layers.at(index)->matrixifyValues();
     }
 
-    Matrix *getActivatedNeuronMatrix(unsigned index) {
+    inline Matrix *getActivatedNeuronMatrix(unsigned index) {
         return this->layers.at(index)->matrixifyActivatedValues();
     }
 
-    Matrix *getDerivedNeuronMatrix(unsigned index) {
+    inline Matrix *getDerivedNeuronMatrix(unsigned index) {
         return this->layers.at(index)->matrixifyDerivedValues();
     }
 
-    Matrix *getWeightMatrix(unsigned index) {
+    inline Matrix *getWeightMatrix(unsigned index) {
         return this->weightMatrices.at(index);
     };
-    
-    void setLayer(unsigned indexLayer,std::vector<double>& neurons) {
+
+    inline void setLayer(unsigned indexLayer, std::vector<double>& neurons) {
         this->layers.at(indexLayer)->setNeurons(&neurons);
     }
 
@@ -102,10 +102,10 @@ public:
     void loadWeights(std::string file);
 
     unsigned topologySize;
-    NN_ACTIVATION hiddenActivationType = A_RELU;
-    NN_ACTIVATION outputActivationType = A_SIGM;
-    NN_COST costFunctionType = COST_MSE;
-    GRADIENT_DESCENT gradientDescent = STOCHASTIC;
+    ActivationFunc hiddenActivationType = RELU;
+    ActivationFunc outputActivationType = SIGM;
+    CostFunc costFunctionType = MSE;
+    GradientDescent gradientDescent = Stochastic;
 
     std::vector<unsigned> topology;
     std::vector<Layer *> layers;
@@ -121,7 +121,7 @@ public:
     double momentum;
     double learningRate;
 
-    ANNConfig config;
+    NNConfig config;
 
 private:
     void setErrorMSE();

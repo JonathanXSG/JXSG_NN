@@ -21,11 +21,12 @@ void NeuralNetwork::backPropagation() {
         // *********************************
         if (i != indexOutputLayer){
             // gradient = dError * dNeuronValue
+//            #pragma omp parallel for schedule(static, 1) collapse(2)
             for (unsigned r = 0; r < this->topology.at(i); r++) {
                 for (unsigned c = 0; c < this->topology.at(i+1); c++) {
-                    gradients->at(i).at(r) += (gradients->at(i+1).at(c) * this->weightMatrices.at(i)->at(r, c));
+                    gradients->at(i).at(r) += (gradients->at(i+1).at(c) * this->weightMatrices.at(i)->at(r, c))
+                            * this->getDerivedNeurons(i)->at(r);
                 }
-                gradients->at(i).at(r) *= this->getDerivedNeurons(i)->at(r);
             }
         }
         // *********************************
@@ -33,6 +34,7 @@ void NeuralNetwork::backPropagation() {
         // *********************************
         else{
             // gradient = dError * dNeuronValue
+//            #pragma omp parallel for schedule(static, 1)
             for (unsigned r = 0; r < this->topology.at(indexOutputLayer); r++) {
                 gradients->at(indexOutputLayer).at(r) = this->derivedErrors.at(r) *
                                                         this->getDerivedNeurons(indexOutputLayer)->at(r);
@@ -47,6 +49,7 @@ void NeuralNetwork::backPropagation() {
             zActivatedValues = this->getNeurons(i - 1);
 
         // Calculating the new weights and deltaWeights
+//        #pragma omp parallel for schedule(static, 1) collapse(2)
         for (unsigned row = 0; row < this->topology.at(i - 1); row++) {
             for (unsigned col = 0; col < this->topology.at(i); col++) {
                 double originalDelta = this->deltaMatrices.at(i - 1)->at(row, col) * this->momentum;

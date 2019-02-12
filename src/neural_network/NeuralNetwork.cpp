@@ -1,7 +1,7 @@
 #include "../../headers/NeuralNetwork.hpp"
 #include <iomanip>
 
-NeuralNetwork::NeuralNetwork(ANNConfig config) {
+NeuralNetwork::NeuralNetwork(NNConfig config) {
     this->config = config;
     this->topology = config.topology;
     this->topologySize = config.topology.size();
@@ -19,19 +19,19 @@ NeuralNetwork::NeuralNetwork(ANNConfig config) {
     for (unsigned i = 0; i < topologySize; i++) {
         // Initializing Hidden layers
         if (i > 0 && i < (topologySize - 1)) {
-            this->layers.emplace_back(new Layer(topology.at(i), HIDDEN_FULLYCONNECTED, this->hiddenActivationType));
+            this->layers.emplace_back(new Layer(topology.at(i), HiddenFullyConnected, this->hiddenActivationType));
             this->layers.at(i)->activate();
             this->layers.at(i)->derive();
         }
         // Initializing Output layer
         else if (i == (topologySize - 1)) {
-            this->layers.emplace_back(new Layer(topology.at(i), OUTPUT, this->outputActivationType));
+            this->layers.emplace_back(new Layer(topology.at(i), Output, this->outputActivationType));
             this->layers.at(i)->activate();
             this->layers.at(i)->derive();
         }
         // Initializing Input Layer
         else {
-            this->layers.emplace_back(new Layer(topology.at(i), INPUT));
+            this->layers.emplace_back(new Layer(topology.at(i), Input));
         }
 
     }

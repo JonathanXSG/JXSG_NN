@@ -14,12 +14,14 @@ public:
         this->values.reserve(rows*columns);
 
         std::mt19937 gen(rd());
-        double const distributionRangeHalfWidth = (2.4 / rows*columns);
-        double const standardDeviation = distributionRangeHalfWidth * 2 / 6;
-        std::normal_distribution<> normalDistribution(0.0,0.5);
+        double const var = 0.5;
+        double const variance = 1.0/sqrt(rows * 1.0);
+        double const variance2 = 2.0/(1.0*(rows +columns));
+        double const varianceRELU = sqrt(2.0/(1.0*rows));
+        std::normal_distribution<> normalDistribution(0.0,1.0);
 
         for (int i = 0; i < rows*columns; i++) {
-            this->values.emplace_back(isRandom ? normalDistribution(gen) : 0.00);
+            this->values.emplace_back(isRandom ? (normalDistribution(gen) * variance) : 0.00);
         }
     }
 
@@ -28,7 +30,7 @@ public:
 
         for (unsigned i = 0; i < this->rows; i++) {
             for (unsigned j = 0; j < this->columns; j++) {
-                m->setValue(j, i, this->at(i, j));
+                m->at(j, i) = this->at(i, j);
             }
         }
 
@@ -44,12 +46,20 @@ public:
         }
     }
 
-    void setValue(unsigned r, unsigned c, double v) {
-        this->values.at(r*std::min(rows,columns) + c) = v;
+    inline double &at(const unsigned r, const unsigned c) {
+        return this->values.at(c * rows + r);
     }
 
-    double &at(unsigned r, unsigned c) {
-        return this->values.at(r*this->columns + c);
+    template <typename T>
+    std::vector<T> flatten(const std::vector<std::vector<T>>& v) {
+        std::size_t total_size = 0;
+        for (const auto& sub : v)
+            total_size += sub.size(); // I wish there was a transform_accumulate
+        std::vector<T> result;
+        result.reserve(total_size);
+        for (const auto& sub : v)
+            result.insert(result.end(), sub.begin(), sub.end());
+        return result;
     }
 
     std::vector<std::vector<double>> getValues() {
@@ -64,11 +74,11 @@ public:
         return vect;
     }
 
-    unsigned getRows() {
+    const unsigned getRows(){
         return this->rows;
     }
 
-    unsigned getColumns() {
+    const unsigned getColumns(){
         return this->columns;
     }
 

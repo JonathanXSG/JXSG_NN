@@ -1,11 +1,12 @@
 #include "../../headers/NeuralNetwork.hpp"
+#include "../../headers/utils/Misc.hpp"
 #include <chrono>
 
 void NeuralNetwork::train(
         std::vector<std::vector<double>> &trainingData,
         std::vector<std::vector<double>> &labelData
 ) {
-    std::time_t t = std::time(0);
+    std::time_t t = std::time(nullptr);
     std::tm* now = std::localtime(&t);
     std::stringstream ss;
     ss << "../reports/" << this->config.reportFile << " "
@@ -17,6 +18,8 @@ void NeuralNetwork::train(
        << now->tm_sec
        << ".csv";
     std::ofstream report(ss.str());
+    utils::Misc::printHeader(report, this->config);
+
     report << "Epoch," << " Loss/Cost" << "\n";
     std::cout << "\t\t" << "Epoch: " << "\t\t" << "Loss/Cost: " << std::endl;
 
@@ -30,11 +33,11 @@ void NeuralNetwork::train(
                 this->feedForward();
                 this->setErrors();
 
-                if (gradientDescent == STOCHASTIC)
+                if (gradientDescent == Stochastic)
                     this->backPropagation();
-                else if (gradientDescent == MINI_BATCH && i % this->config.batch == 0)
+                else if (gradientDescent == MiniBatch && i % this->config.batch == 0)
                     this->backPropagation();
-                else if (gradientDescent == BATCH && (this->config.epochs - 1) == i)
+                else if (gradientDescent == Batch && (this->config.epochs - 1) == i)
                     this->backPropagation();
             }
             if (tIndex % (labelData.size() / 10) == 0) {

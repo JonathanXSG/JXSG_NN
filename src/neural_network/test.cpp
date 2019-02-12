@@ -1,4 +1,5 @@
 #include "../../headers/NeuralNetwork.hpp"
+#include "../../headers/utils/Misc.hpp"
 #include <chrono>
 
 void NeuralNetwork::test(
@@ -17,6 +18,8 @@ void NeuralNetwork::test(
        << now->tm_sec
        << ".csv";
     std::ofstream report(ss.str());
+    utils::Misc::printHeader(report, this->config);
+
     report << "Sample," << " Correct," << " Prediction," << " Target," << " Loss/Cost, " << " Accuracy" << "\n";
     report << std::boolalpha;
     std::cout << std::boolalpha;

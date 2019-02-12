@@ -5,42 +5,44 @@
 #include <algorithm>
 #include "Matrix.hpp"
 
-enum LAYER_TYPE {
-    INPUT,
-    HIDDEN_FULLYCONNECTED,
-    OUTPUT
+enum LayerType {
+    Input,
+    HiddenFullyConnected,
+    HiddenConvolutional,
+    HiddenBatchNorm,
+    Output
 };
 
-enum NN_ACTIVATION {
-    A_TANH        = 0,
-    A_SIGM        = 1,
-    A_RELU        = 2,
-    A_LeakyRELU   = 3,
-    A_LINE        = 4,
-    A_SOFTMAX     = 5
+enum ActivationFunc {
+    TANH,
+    SIGM,
+    RELU,
+    LeakyRELU,
+    LINE,
+    SOFTMAX
 };
 
 class Layer {
 public:
-    Layer(unsigned size, LAYER_TYPE layerType, NN_ACTIVATION activationType = A_RELU);
+    Layer(unsigned size, LayerType layerType, ActivationFunc activationType = RELU);
 
     void activate();
 
     void derive();
 
-    void setVal(unsigned i, double v) {
+    inline void setVal(unsigned i, double v) {
         this->neurons->at(i) = v;
     }
 
-    void setNeurons(std::vector<double> *neurons) {
+    void setNeurons(std::vector<double>* neurons) {
         this->neurons = neurons;
     }
 
-    Matrix *matrixifyValues();
+    Matrix *matrixifyValues() const;
 
-    Matrix *matrixifyActivatedValues();
+    Matrix *matrixifyActivatedValues() const;
 
-    Matrix *matrixifyDerivedValues();
+    Matrix *matrixifyDerivedValues() const;
 
     std::vector<double> *getNeurons() {
         return this->neurons;
@@ -56,8 +58,8 @@ public:
 
 private:
     unsigned size;
-    LAYER_TYPE layerType;
-    NN_ACTIVATION activationType;
+    LayerType layerType;
+    ActivationFunc activationType;
     std::vector<double> *neurons;
     std::vector<double> *activatedNeurons;
     std::vector<double> *derivedNeurons;

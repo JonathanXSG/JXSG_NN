@@ -2,10 +2,10 @@
 
 void NeuralNetwork::setErrors() {
     switch (costFunctionType) {
-        case (COST_MSE):
+        case (MSE):
             this->setErrorMSE();
             break;
-        case (COST_CEE):
+        case (CEE):
             this->setErrorCEE();
             break;
         default:

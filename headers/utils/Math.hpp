@@ -18,7 +18,7 @@ namespace utils {
                     for (int k = 0; k < b->getRows(); k++) {
                         double p = a->at(i, k) * b->at(k, j);
                         double newVal = c->at(i, j) + p;
-                        c->setValue(i, j, newVal);
+                        c->at(i, j ) = newVal;
                     }
                 }
             }

@@ -1,12 +1,13 @@
 cmake_minimum_required(VERSION 3.7)
-project(JXSG_NN)
+project(MP_NN)
 
 #set(CMAKE_BUILD_TYPE Debug)
 #set(CMAKE_BUILD_TYPE Release)
 set (CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fopenmp")
 
 add_executable(
-        JXSG_NN
+        MP_NN
         src/main.cpp
         src/Layer.cpp
         src/neural_network/NeuralNetwork.cpp
@@ -14,4 +15,4 @@ add_executable(
         src/neural_network/feedForward.cpp
         src/neural_network/backPropagation.cpp
         src/neural_network/train.cpp
-        src/neural_network/test.cpp)
+        src/neural_network/test.cpp src/utils/Misc.cpp)
