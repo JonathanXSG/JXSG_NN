@@ -106,8 +106,8 @@ void NeuralNetwork::backPropagation() {
 //   zActivatedValues      = this->layers.at(indexOutputLayer - 1)->matrixifyActivatedValues;
 
 //   deltaWeights  = new Matrix(
-//                     zActivatedValues->getRows(),
-//                     gradients->getColumns(),
+//                     zActivatedValues->getHeight(),
+//                     gradients->getWidth(),
 //                     false
 //                   );    
 
@@ -149,8 +149,8 @@ void NeuralNetwork::backPropagation() {
 //     transposedPrevWeights  = this->weightMatrices.at(i)->transpose();
 
 //     gradients              = new Matrix(
-//                             prevGradients->getRows(),
-//                             transposedPrevWeights->getColumns(),
+//                             prevGradients->getHeight(),
+//                             transposedPrevWeights->getWidth(),
 //                             false
 //                           );
 
@@ -158,7 +158,7 @@ void NeuralNetwork::backPropagation() {
 
 //     hiddenDerivedValues = this->layers.at(i)->matrixifyDerivedValues;
 
-//     for(int colCounter = 0; colCounter < hiddenDerivedValues->getColumns(); colCounter++) {
+//     for(int colCounter = 0; colCounter < hiddenDerivedValues->getWidth(); colCounter++) {
 //       double  g = gradients->getValue(0, colCounter) * hiddenDerivedValues->at(0, colCounter);
 //       gradients->setValue(0, colCounter, g);
 //     }
@@ -171,8 +171,8 @@ void NeuralNetwork::backPropagation() {
 //     }
 
 //     deltaWeights      = new Matrix(
-//                           transposedHidden->getRows(),
-//                           gradients->getColumns(),
+//                           transposedHidden->getHeight(),
+//                           gradients->getWidth(),
 //                           false
 //                         );
 
@@ -180,13 +180,13 @@ void NeuralNetwork::backPropagation() {
 
 //     // update weights
 //     tempNewWeights  = new Matrix(
-//                         this->weightMatrices.at(i - 1)->getRows(),
-//                         this->weightMatrices.at(i - 1)->getColumns(),
+//                         this->weightMatrices.at(i - 1)->getHeight(),
+//                         this->weightMatrices.at(i - 1)->getWidth(),
 //                         false
 //                       );
 
-//     for(int row = 0; row < tempNewWeights->getRows(); row++) {
-//       for(int col = 0; col < tempNewWeights->getColumns(); col++) {
+//     for(int row = 0; row < tempNewWeights->getHeight(); row++) {
+//       for(int col = 0; col < tempNewWeights->getWidth(); col++) {
 //         double originalWeight  = this->weightMatrices.at(i - 1)->at(row, col);
 //         double deltaWeight     = deltaWeights->at(row, col);
 

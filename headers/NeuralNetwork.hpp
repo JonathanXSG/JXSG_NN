@@ -65,28 +65,16 @@ public:
 
     void setErrors();
 
-    inline std::vector<double>* getNeurons(unsigned index) {
+    inline Matrix* getNeurons(unsigned index) {
         return this->layers.at(index)->getNeurons();
     }
 
-    inline std::vector<double>* getActivatedNeurons(unsigned index) {
-        return this->layers.at(index)->getActivatedValues();
+    inline Matrix>* getActivatedNeurons(unsigned index) {
+        return this->layers.at(index)->getNeuronsActivated();
     }
 
-    inline std::vector<double>* getDerivedNeurons(unsigned index) {
-        return this->layers.at(index)->getActivatedValues();
-    }
-
-    inline Matrix *getNeuronMatrix(unsigned index) {
-        return this->layers.at(index)->matrixifyValues();
-    }
-
-    inline Matrix *getActivatedNeuronMatrix(unsigned index) {
-        return this->layers.at(index)->matrixifyActivatedValues();
-    }
-
-    inline Matrix *getDerivedNeuronMatrix(unsigned index) {
-        return this->layers.at(index)->matrixifyDerivedValues();
+    inline Matrix* getDerivedNeurons(unsigned index) {
+        return this->layers.at(index)->getNeuronsDerived();
     }
 
     inline Matrix *getWeightMatrix(unsigned index) {
@@ -100,6 +88,8 @@ public:
     void saveWeights(std::string file);
 
     void loadWeights(std::string file);
+
+    double getBias();
 
     unsigned topologySize;
     ActivationFunc hiddenActivationType = RELU;
@@ -122,7 +112,6 @@ public:
     double learningRate;
 
     NNConfig config;
-
 private:
     void setErrorMSE();
 

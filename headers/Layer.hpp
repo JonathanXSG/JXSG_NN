@@ -24,45 +24,113 @@ enum ActivationFunc {
 
 class Layer {
 public:
-    Layer(unsigned size, LayerType layerType, ActivationFunc activationType = RELU);
 
-    void activate();
+    void activate() {
+        switch (activationType) {
+            case TANH:{
+                for (unsigned i = 0; i < this->neurons->getWidth(); i++) {
+                    this->activatedNeurons->at(i) = tanh(this->neurons->at(i));
+                }
+                break;
+            }
+            case SIGM:{
+                for (unsigned i = 0; i < this->neurons->getWidth(); i++) {
+                    this->activatedNeurons->at(i) = (1.0 / (1.0 + exp(-this->neurons->at(i))));
+                }
+                break;
+            }
+            case RELU:{
+                for (unsigned i = 0; i < this->neurons->getWidth(); i++) {
+                    this->activatedNeurons->at(i) = (this->neurons->at(i) > 0.0 ? this->neurons->at(i) : 0.0);
+                }
+                break;
+            }
+            case LeakyRELU:{
+                for (unsigned i = 0; i < this->neurons->getWidth(); i++) {
+                    this->activatedNeurons->at(i) = this->neurons->at(i) > 0.0 ? this->neurons->at(i) : this->neurons->at(i) / 100;
+                }
+                break;
+            }
+            case LINE:{
+                for (unsigned i = 0; i < this->neurons->getWidth(); i++) {
+                    this->activatedNeurons->at(i) = this->neurons->at(i);
+                }
+                break;
+            }
+            case SOFTMAX: {
+                double max = this->neurons->maxValue();
+                double sum = this->neurons->accumulate();
 
-    void derive();
-
-    inline void setVal(unsigned i, double v) {
-        this->neurons->at(i) = v;
+                for (unsigned i = 0; i < this->neurons->getWidth(); i++) {
+                    this->activatedNeurons->at(i) = exp(this->neurons->at(i) - max) / sum;
+                }
+                break;
+            }
+            default:
+                for (unsigned i = 0; i < this->neurons->getWidth(); i++) {
+                    this->activatedNeurons->at(i) = (1.0 / (1.0 + exp(-this->neurons->at(i))));
+                }
+        }
+    }
+    void derive(){
+        switch (activationType){
+            case TANH:
+                for(unsigned i=0; i< this->neurons->getWidth(); i++){
+                    this->derivedNeurons->at(i) = (1.0 - (this->activatedNeurons->at(i) * this->activatedNeurons->at(i)));
+                }
+                break;
+            case SIGM:
+                for(unsigned i=0; i< this->neurons->getWidth(); i++){
+                    this->derivedNeurons->at(i) = (this->activatedNeurons->at(i) * (1.0 - this->activatedNeurons->at(i)));
+                }
+                break;
+            case RELU:
+                for(unsigned i=0; i< this->neurons->getWidth(); i++){
+                    this->derivedNeurons->at(i) = this->activatedNeurons->at(i) > 0 ? 1.0 : 0.0;
+                }
+                break;
+            case LeakyRELU:
+                for(unsigned i=0; i< this->neurons->getWidth(); i++){
+                    this->derivedNeurons->at(i) = this->activatedNeurons->at(i) > 0.0 ? 1.0 : 1.0/100.0;
+                }
+                break;
+            case LINE:
+                for(unsigned i=0; i< this->neurons->getWidth(); i++){
+                    this->derivedNeurons->at(i) = 1.0;
+                }
+                break;
+            case SOFTMAX:
+                for(unsigned i=0; i< this->neurons->getWidth(); i++){
+                    this->derivedNeurons->at(i) = this->activatedNeurons->at(i) * (1.0 - this->activatedNeurons->at(i));
+                }
+                break;
+            default:
+                for(unsigned i=0; i< this->neurons->getWidth(); i++){
+                    this->derivedNeurons->at(i) = (this->activatedNeurons->at(i) * (1.0 - this->activatedNeurons->at(i)));
+                }
+        }
     }
 
-    void setNeurons(std::vector<double>* neurons) {
-        this->neurons = neurons;
-    }
+    virtual void feedForward(const Layer *prevLayer, const Matrix *weights) = 0;
 
-    Matrix *matrixifyValues() const;
+    virtual void backPropagation(const Layer *prevLayer, const Matrix *weights) = 0;
 
-    Matrix *matrixifyActivatedValues() const;
+    virtual Matrix * getNeurons() const { return neurons;}
 
-    Matrix *matrixifyDerivedValues() const;
+    virtual Matrix * getNeuronsActivated() const { return neurons;}
 
-    std::vector<double> *getNeurons() {
-        return this->neurons;
-    }
+    virtual Matrix *getNeuronsDerived() { return neurons;}
 
-    std::vector<double> *getActivatedValues() {
-        return activatedNeurons;
-    }
 
-    std::vector<double> *getDerivedValues() {
-        return derivedNeurons;
-    }
-
-private:
+protected:
     unsigned size;
+    unsigned layerIndex;
     LayerType layerType;
     ActivationFunc activationType;
-    std::vector<double> *neurons;
-    std::vector<double> *activatedNeurons;
-    std::vector<double> *derivedNeurons;
+    double bias;
+    Matrix *neurons;
+    Matrix *activatedNeurons;
+    Matrix *derivedNeurons;
 };
 
 #endif

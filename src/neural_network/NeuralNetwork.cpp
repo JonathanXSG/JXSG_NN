@@ -1,4 +1,5 @@
 #include "../../headers/NeuralNetwork.hpp"
+#include "../../headers/FCLayer.hpp"
 #include <iomanip>
 
 NeuralNetwork::NeuralNetwork(NNConfig config) {
@@ -19,19 +20,19 @@ NeuralNetwork::NeuralNetwork(NNConfig config) {
     for (unsigned i = 0; i < topologySize; i++) {
         // Initializing Hidden layers
         if (i > 0 && i < (topologySize - 1)) {
-            this->layers.emplace_back(new Layer(topology.at(i), HiddenFullyConnected, this->hiddenActivationType));
+            this->layers.emplace_back(new FCLayer(topology.at(i), HiddenFullyConnected, this->hiddenActivationType));
             this->layers.at(i)->activate();
             this->layers.at(i)->derive();
         }
         // Initializing Output layer
         else if (i == (topologySize - 1)) {
-            this->layers.emplace_back(new Layer(topology.at(i), Output, this->outputActivationType));
+            this->layers.emplace_back(new FCLayer(topology.at(i), Output, this->outputActivationType));
             this->layers.at(i)->activate();
             this->layers.at(i)->derive();
         }
         // Initializing Input Layer
         else {
-            this->layers.emplace_back(new Layer(topology.at(i), Input));
+            this->layers.emplace_back(new FCLayer(topology.at(i), Input));
         }
 
     }
@@ -40,8 +41,8 @@ NeuralNetwork::NeuralNetwork(NNConfig config) {
     this->deltaMatrices.reserve(topologySize-1);
     this->weightMatrices.reserve(topologySize-1);
     for (unsigned i = 0; i < (topologySize - 1); i++) {
-        // Weight matrix with rows = number of Neurons in current layer
-        // and columns = number of Neurons in next layer
+        // Weight matrix with height = number of Neurons in current layer
+        // and width = number of Neurons in next layer
         this->deltaMatrices.emplace_back( new Matrix(topology.at(i), topology.at(i + 1), false));
         this->weightMatrices.emplace_back(new Matrix(topology.at(i), topology.at(i + 1), true));
     }
@@ -84,8 +85,8 @@ void NeuralNetwork::loadWeights(std::string filename) {
     std::vector<std::vector<std::vector<double> > > temp = wightFile["weights"];
 
     for (unsigned i = 0; i < this->weightMatrices.size(); i++) {
-        for (unsigned r = 0; r < this->weightMatrices.at(i)->getRows(); r++) {
-            for (unsigned c = 0; c < this->weightMatrices.at(i)->getColumns(); c++) {
+        for (unsigned r = 0; r < this->weightMatrices.at(i)->getHeight(); r++) {
+            for (unsigned c = 0; c < this->weightMatrices.at(i)->getWidth(); c++) {
                 this->weightMatrices.at(i)->at(r, c) = temp.at(i).at(r).at(c);
             }
         }

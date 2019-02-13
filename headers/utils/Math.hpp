@@ -13,9 +13,9 @@ namespace utils {
     class Math {
     public:
         static void multiplyMatrix(Matrix *a, Matrix *b, Matrix *c) {
-            for (int i = 0; i < a->getRows(); i++) {
-                for (int j = 0; j < b->getColumns(); j++) {
-                    for (int k = 0; k < b->getRows(); k++) {
+            for (int i = 0; i < a->getHeight(); i++) {
+                for (int j = 0; j < b->getWidth(); j++) {
+                    for (int k = 0; k < b->getHeight(); k++) {
                         double p = a->at(i, k) * b->at(k, j);
                         double newVal = c->at(i, j) + p;
                         c->at(i, j ) = newVal;

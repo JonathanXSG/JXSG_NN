@@ -55,3 +55,7 @@ void NeuralNetwork::test(
 
 }
 
+double NeuralNetwork::getBias() {
+    return this->bias;
+}
+

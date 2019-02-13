@@ -22,8 +22,8 @@ void NeuralNetwork::feedForward() {
         // to the weights that go to each right neuron, them sum them
         // rightNeuron_x =  Sum ( leftNeuron_y * weight_x-y )
 //        #pragma omp parallel for schedule(static, 1) collapse(2)
-        for (unsigned r = 0; r < leftWeights->getRows(); r++) {
-            for (unsigned c = 0; c < leftWeights->getColumns(); c++) {
+        for (unsigned r = 0; r < leftWeights->getHeight(); r++) {
+            for (unsigned c = 0; c < leftWeights->getWidth(); c++) {
                 this->getNeurons(i+1)->at(c) += (leftNeurons->at(r) * leftWeights->at(r, c));
             }
         }
